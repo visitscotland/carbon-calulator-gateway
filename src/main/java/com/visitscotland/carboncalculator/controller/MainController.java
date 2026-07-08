@@ -1,5 +1,6 @@
 package com.visitscotland.carboncalculator.controller;
 
+import com.visitscotland.carboncalculator.exception.VsException;
 import com.visitscotland.carboncalculator.service.BregService;
 import com.visitscotland.carboncalculator.service.RecaptchaService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tools.jackson.databind.JsonNode;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/")
@@ -27,15 +30,25 @@ public class MainController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody JsonNode payload, HttpServletRequest request) {
-        if (isValidRecaptcha(request, payload)) {
-            return processRequest(payload);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Recaptcha key");
+        try {
+            if (isValidRecaptcha(request, payload)) {
+                return processRequest(payload);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Recaptcha key");
+            }
+        } catch (VsException e) {
+            //TODO logger.error
+            return ResponseEntity.status(HttpStatus.valueOf(500)).body("The service encountered an error. Please try again later. ");
         }
     }
 
-    private ResponseEntity<?> processRequest(JsonNode payload) {
-        return ResponseEntity.ok(payload);
+    private ResponseEntity<?> processRequest(JsonNode payload) throws VsException {
+        String uuid = UUID.randomUUID().toString();
+//        bregService.sendRequest(payload, uuid);
+        return bregService.sendRequest(payload, uuid);
+        //ResponseEntity.ok(payload);
+
+
     }
 
     private boolean isValidRecaptcha(HttpServletRequest request, JsonNode payload){
@@ -45,6 +58,6 @@ public class MainController {
         } else {
             captchaResponse = "";
         }
-        return recaptchaService.captchaCheck(request.getRemoteAddr(), captchaResponse);
+        return recaptchaService.isValidRecaptcha(request, captchaResponse);
     }
 }

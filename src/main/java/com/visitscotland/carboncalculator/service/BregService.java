@@ -33,7 +33,7 @@ public class BregService {
         this.objectMapper = objectMapper;
     }
 
-    public ResponseEntity<String> sendRequest(JsonNode payload, String fileUrl) throws VsException {
+    public ResponseEntity<String> sendRequest(JsonNode payload, String submissionId) throws VsException {
 
         if (serviceEnabled) {
             //This means to be an absurd error message to quickly identify the issue
@@ -49,7 +49,7 @@ public class BregService {
                 modifiedPayload.remove(property);
             }
 
-            modifiedPayload.put("obs_url", fileUrl);
+            modifiedPayload.put("submissionId", submissionId);
             
             logger.info("Sending request to BREG service at: {}", bregServiceUrl);
             //TODO only if the application is in debug (non-production) mode

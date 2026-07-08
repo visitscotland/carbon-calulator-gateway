@@ -38,12 +38,12 @@ public class RecaptchaService {
         this.networkUtils = networkUtils;
     }
 
-    private boolean isValidRecaptcha(Map<String, ?> formData, HttpServletRequest request, String captchaResponse) {
+    public boolean isValidRecaptcha(HttpServletRequest request, String captchaResponse) {
         String remoteAddr = networkUtils.getIPAddress(request.getHeader(HEADER_FORWARDED), request.getRemoteAddr());
         return captchaCheck(remoteAddr, captchaResponse);
     }
 
-    public boolean captchaCheck(String remoteAddr, String captchaResponse) {
+    private boolean captchaCheck(String remoteAddr, String captchaResponse) {
         if (!isRecaptchaEnabled) {
             logger.warn("The recaptcha validation has been disabled.");
             return true;
@@ -51,19 +51,13 @@ public class RecaptchaService {
             String secretKey = this.secretkey;
             try {
                 if (reCaptcha.isValid(remoteAddr, captchaResponse, secretKey)) {
-                    logger.info("recaptcha success");
+                    logger.debug("recaptcha success");
                     return true;
                 }
             } catch (IOException e) {
-                logger.info("recaptcha failure");
+                logger.debug("recaptcha failure");
             }
         }
         return false;
     }
-
-    private String generateCredentials(String publicKey, String privateKey) {
-        String secret = publicKey + ":" + privateKey;
-        return Base64.getEncoder().encodeToString(secret.getBytes());
-    }
-
 }
