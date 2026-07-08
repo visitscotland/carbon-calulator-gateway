@@ -1,4 +1,4 @@
-package com.visitscotland.carboncalculator.breg;
+package com.visitscotland.carboncalculator.service;
 
 import com.visitscotland.carboncalculator.exception.VsException;
 import org.slf4j.Logger;

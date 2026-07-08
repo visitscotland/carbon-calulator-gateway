@@ -40,6 +40,25 @@
         </dependency>
 
         <dependency>
+            <groupId>com.visitscotland</groupId>
+            <artifactId>utils</artifactId>
+            <version>3.0.2</version>
+            <exclusions>
+                <exclusion>
+                    <!-- This dependency has been removed in order to avoid potential conflicts with the Spring Logging mechanism -->
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.visitscotland</groupId>
+            <artifactId>vs-recaptcha</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
