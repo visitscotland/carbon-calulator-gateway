@@ -42,27 +42,11 @@ public class BregService {
         }
 
         try {
-            // Create a copy of the payload and remove specified properties
-            ObjectNode modifiedPayload = payload.deepCopy().asObject();
-            
-            for (String property : propertiesToRemove) {
-                modifiedPayload.remove(property);
-            }
-
-            modifiedPayload.put("submissionId", submissionId);
-            
             logger.info("Sending request to BREG service at: {}", bregServiceUrl);
-            //TODO only if the application is in debug (non-production) mode
-            logger.debug("Modified payload: {}", modifiedPayload);
 
-            // Set up headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            
-            // Create request entity
             HttpEntity<String> requestEntity = new HttpEntity<>(
-                objectMapper.writeValueAsString(modifiedPayload), 
-                headers
+                sanitize(payload, submissionId),
+                getHeaders()
             );
             
             // Send POST request
@@ -79,5 +63,30 @@ public class BregService {
             logger.error("Error sending request to BREG service: {}", e.getMessage());
             throw new VsException("Failed to send request to BREG service", e);
         }
+    }
+
+    /**
+     * Remove all non-necessary properties and includes the submissionId
+     * @param payload
+     * @param submissionId
+     * @return
+     */
+    private String sanitize(JsonNode payload, String submissionId) {
+        ObjectNode modifiedPayload = payload.asObject();
+
+        for (String property : propertiesToRemove) {
+            modifiedPayload.remove(property);
+        }
+
+        modifiedPayload.put("vsUID", submissionId);
+
+        return objectMapper.writeValueAsString(modifiedPayload);
+    }
+
+    private HttpHeaders getHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return headers;
     }
 }
