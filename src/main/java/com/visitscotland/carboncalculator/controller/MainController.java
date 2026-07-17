@@ -3,6 +3,7 @@ package com.visitscotland.carboncalculator.controller;
 import com.visitscotland.carboncalculator.exception.VsException;
 import com.visitscotland.carboncalculator.service.BregService;
 import com.visitscotland.carboncalculator.service.RecaptchaService;
+import com.visitscotland.carboncalculator.service.TraceAPIService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,12 @@ public class MainController {
 
     private final BregService bregService;
     private final RecaptchaService recaptchaService;
+    private final TraceAPIService traceAPIService;
 
-    public MainController(BregService bregService, RecaptchaService recaptchaService) {
+    public MainController(BregService bregService, RecaptchaService recaptchaService, TraceAPIService traceAPIService) {
         this.bregService = bregService;
         this.recaptchaService = recaptchaService;
+        this.traceAPIService = traceAPIService;
     }
 
     @GetMapping("/health")
@@ -29,29 +32,24 @@ public class MainController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody JsonNode payload, HttpServletRequest request) {
-        try {
-            if (isValidRecaptcha(request, payload)) {
-                return processRequest(payload);
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Recaptcha key");
-            }
-        } catch (VsException e) {
-            //TODO logger.error
-            return ResponseEntity.status(HttpStatus.valueOf(500)).body("The service encountered an error. Please try again later. ");
+    public ResponseEntity<String> register(@RequestBody JsonNode payload, HttpServletRequest request) {
+        if (isValidRecaptcha(request, payload)) {
+            return processRequest(payload);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Recaptcha key");
         }
     }
 
-    private ResponseEntity<?> processRequest(JsonNode payload) throws VsException {
+    private ResponseEntity<String> processRequest(JsonNode payload) throws VsException {
         String uuid = UUID.randomUUID().toString();
-//        bregService.sendRequest(payload, uuid);
-        return bregService.sendRequest(payload, uuid);
-        //ResponseEntity.ok(payload);
 
+        traceAPIService.register(payload.deepCopy().asObject(), uuid);
+        bregService.sendRequest(payload, uuid);
 
+        return ResponseEntity.ok("Submission completed successfully");
     }
 
-    private boolean isValidRecaptcha(HttpServletRequest request, JsonNode payload){
+    private boolean isValidRecaptcha(HttpServletRequest request, JsonNode payload) {
         String captchaResponse;
         if (payload.has(RecaptchaService.RECAPTCHA_FIELD_NAME)) {
             captchaResponse = payload.get(RecaptchaService.RECAPTCHA_FIELD_NAME).asString();
