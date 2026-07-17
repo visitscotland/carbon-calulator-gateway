@@ -66,7 +66,7 @@ public class TraceAPIService {
      *
      * @throws VsException when the authentication to their service fail.
      */
-    public String getAuthenticationToken() throws VsException {
+    public String getAuthenticationToken() throws TraceApiException {
         try {
             ResponseEntity<JsonNode> authentication = authenticate();
             if (authentication.hasBody() && authentication.getBody().has("payload")) {
@@ -80,7 +80,7 @@ public class TraceAPIService {
                     e.getStatusCode(), e.getMessage());
         }
 
-        throw new VsException("Failed to authenticate with Trace API");
+        throw new TraceApiException("Failed to authenticate with Trace API");
     }
 
     /**

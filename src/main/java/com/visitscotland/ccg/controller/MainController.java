@@ -79,7 +79,7 @@ public class MainController {
                             "reference number: " + submissionId);
         } else if (traceApiFailure || bregFailure) {
             logger.error("One of the services could not process the submission, SubmissionId: {}, Trace API:{}, BREG: {}",
-                    submissionId, traceApiFailure, bregFailure);
+                    submissionId, traceApiFailure?"FAIL": "SUCCESS", bregFailure?"FAIL": "SUCCESS");
             return ResponseEntity.ok(String.format("Submission completed with errors. " +
                     "Please contact VisitScotland Team with the following reference number: {}", submissionId));
         } else {
