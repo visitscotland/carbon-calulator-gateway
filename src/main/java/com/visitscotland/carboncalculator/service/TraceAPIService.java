@@ -28,15 +28,34 @@ public class TraceAPIService {
     @Value("${trace-api.base-url}")
     String baseUrl;
 
+    @Value("${trace-api.enabled}")
+    Boolean enabled;
+
     public TraceAPIService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
     }
 
     public ResponseEntity<ObjectNode> register(ObjectNode payload, String submissionId) throws VsException {
-        String token = getAuthenticationToken();
-        String sanitizedPayload = sanitize(payload, submissionId);
-        return submit(baseUrl + "/visitscotland/register", sanitizedPayload, token);
+        if (Boolean.TRUE.equals(enabled)) {
+            String token = getAuthenticationToken();
+            String sanitizedPayload = sanitize(payload, submissionId);
+            ResponseEntity<ObjectNode> response = submit(baseUrl + "/visitscotland/register", sanitizedPayload, token);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                logger.warn("Failed to register with Trace API: {}, submissionId: {}", response.getStatusCode(), submissionId);
+            }
+            return response;
+        } else {
+            return ResponseEntity.ok(createSimpleResponse("Submission Skipped by configuration"));
+        }
+    }
+
+    private ObjectNode createSimpleResponse (String message) {
+        ObjectNode node = new ObjectMapper().createObjectNode();
+        node.put("message", message);
+        node.put("code", 200);
+
+        return node;
     }
 
     /**
@@ -96,11 +115,6 @@ public class TraceAPIService {
         try {
             return restTemplate.exchange(url, HttpMethod.PUT, entity, ObjectNode.class);
         } catch (HttpClientErrorException e) {
-//            ObjectNode errorMessage = e.getResponseBodyAs(ObjectNode.class);
-//            if (errorMessage != null && errorMessage.has("status")
-//                    && errorMessage.get("status").asInt() == HttpStatus.UNAUTHORIZED.value()) {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
-//            }
             throw new TraceApiException("Error submitting to Trace API.", e);
         }
 
