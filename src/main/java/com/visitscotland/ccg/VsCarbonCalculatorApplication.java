@@ -1,4 +1,4 @@
-package com.visitscotland.carboncalculator;
+package com.visitscotland.ccg;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

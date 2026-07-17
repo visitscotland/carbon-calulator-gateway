@@ -1,4 +1,4 @@
-package com.visitscotland.carboncalculator.exception;
+package com.visitscotland.ccg.exception;
 
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.HttpClientErrorException;

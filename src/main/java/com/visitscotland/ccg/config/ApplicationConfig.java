@@ -1,4 +1,4 @@
-package com.visitscotland.carboncalculator.config;
+package com.visitscotland.ccg.config;
 
 import com.visitscotland.recaptcha.ReCaptcha;
 import com.visitscotland.utils.info.NetworkUtils;

@@ -1,7 +1,7 @@
-package com.visitscotland.carboncalculator.controller;
+package com.visitscotland.ccg.controller;
 
-import com.visitscotland.carboncalculator.exception.TraceApiException;
-import com.visitscotland.carboncalculator.exception.VsException;
+import com.visitscotland.ccg.exception.TraceApiException;
+import com.visitscotland.ccg.exception.VsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

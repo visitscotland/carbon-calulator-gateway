@@ -1,4 +1,4 @@
-package com.visitscotland.carboncalculator.service;
+package com.visitscotland.ccg.service;
 
 import com.visitscotland.recaptcha.ReCaptcha;
 import com.visitscotland.utils.Contract;
@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Map;
 
 @Service
 public class RecaptchaService {

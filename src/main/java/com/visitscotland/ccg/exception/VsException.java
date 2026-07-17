@@ -1,4 +1,4 @@
-package com.visitscotland.carboncalculator.exception;
+package com.visitscotland.ccg.exception;
 
 public class VsException extends RuntimeException {
 

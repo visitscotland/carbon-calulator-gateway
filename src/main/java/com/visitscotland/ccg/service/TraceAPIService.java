@@ -1,7 +1,7 @@
-package com.visitscotland.carboncalculator.service;
+package com.visitscotland.ccg.service;
 
-import com.visitscotland.carboncalculator.exception.TraceApiException;
-import com.visitscotland.carboncalculator.exception.VsException;
+import com.visitscotland.ccg.exception.TraceApiException;
+import com.visitscotland.ccg.exception.VsException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;

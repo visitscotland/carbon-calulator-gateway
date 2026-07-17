@@ -1,10 +1,10 @@
-package com.visitscotland.carboncalculator.controller;
+package com.visitscotland.ccg.controller;
 
-import com.visitscotland.carboncalculator.exception.TraceApiException;
-import com.visitscotland.carboncalculator.exception.VsException;
-import com.visitscotland.carboncalculator.service.BregService;
-import com.visitscotland.carboncalculator.service.RecaptchaService;
-import com.visitscotland.carboncalculator.service.TraceAPIService;
+import com.visitscotland.ccg.exception.TraceApiException;
+import com.visitscotland.ccg.exception.VsException;
+import com.visitscotland.ccg.service.BregService;
+import com.visitscotland.ccg.service.RecaptchaService;
+import com.visitscotland.ccg.service.TraceAPIService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
