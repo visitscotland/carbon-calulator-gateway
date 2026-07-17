@@ -13,6 +13,31 @@
 
 [TBD]
 
+## Getting Started
+
+[TBC]  COMING SOON
+
+### How to Run the Application
+
+
+#### Run in development mode:
+
+```bash
+mvn spring-boot:run
+```
+
+#### Run with custom configuration
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8082"
+```
+
+
+or if you want to specify a custom configuration file:
+```bash 
+java -jar target/vs-carbon-calculator-gateway-1.0.0.jar --spring.config.additional-location=file:./override.properties
+```
+
 ## Architecture & Data Flow
 
 [TBD]
@@ -50,6 +75,8 @@ curl http://localhost:8096/health
 
 [TBD]
 
+
+
 ### Release Process
 
 To release a new version of the service, follow these steps:
@@ -66,4 +93,5 @@ This command will ask you to confirm the release version, the next development v
 The plugin will then create a release branch, update the version numbers in the POM files, commit the changes, create a
 tag for the release and push everything to the remote repository.
 
-
+References:
+- [Jenkins Development Pipeline](https://jenkins.visitscotland.com/view/all/job/ccgw/)
