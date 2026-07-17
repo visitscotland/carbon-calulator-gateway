@@ -33,9 +33,9 @@ public class BregService {
         this.objectMapper = objectMapper;
     }
 
-    public ResponseEntity<String> sendRequest(JsonNode payload, String submissionId) throws VsException {
+    public ResponseEntity<String> sendRequest(JsonNode payload, String submissionId, boolean traceApiFailure) throws VsException {
 
-        if (serviceEnabled) {
+        if (!serviceEnabled) {
             //This means to be an absurd error message to quickly identify the issue
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
                     .body("This application is in development mode");
@@ -45,7 +45,7 @@ public class BregService {
             logger.info("Sending request to BREG service at: {}", bregServiceUrl);
 
             HttpEntity<String> requestEntity = new HttpEntity<>(
-                sanitize(payload, submissionId),
+                sanitize(payload, submissionId, traceApiFailure),
                 getHeaders()
             );
             
@@ -71,7 +71,7 @@ public class BregService {
      * @param submissionId
      * @return
      */
-    private String sanitize(JsonNode payload, String submissionId) {
+    private String sanitize(JsonNode payload, String submissionId, boolean traceApiFailure) {
         ObjectNode modifiedPayload = payload.asObject();
 
         for (String property : propertiesToRemove) {
@@ -79,6 +79,9 @@ public class BregService {
         }
 
         modifiedPayload.put("vsUID", submissionId);
+        if (traceApiFailure) {
+            modifiedPayload.put("traceApiFailure", traceApiFailure);
+        }
 
         return objectMapper.writeValueAsString(modifiedPayload);
     }
