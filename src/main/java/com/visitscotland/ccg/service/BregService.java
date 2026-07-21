@@ -1,9 +1,9 @@
 package com.visitscotland.ccg.service;
 
+import com.visitscotland.ccg.config.BregProperties;
 import com.visitscotland.ccg.exception.VsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,31 +18,22 @@ public class BregService {
     
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-    
-    @Value("${breg.service.url}")
-    private String bregServiceUrl;
-    
-    @Value("${breg.remove.properties}")
-    private String[] propertiesToRemove;
+    private final BregProperties properties;
 
-    @Value("${breg.enabled}")
-    private boolean serviceEnabled;
-
-    public BregService(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public BregService(RestTemplate restTemplate, ObjectMapper objectMapper, BregProperties properties) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.properties = properties;
     }
 
     public ResponseEntity<String> sendRequest(JsonNode payload, String submissionId, boolean traceApiFailure) throws VsException {
 
-        if (!serviceEnabled) {
-            //This means to be an absurd error message to quickly identify the issue
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
-                    .body("This application is in development mode");
+        if (!properties.isEnabled()) {
+            throw new VsException("The submission to BREG service is not enabled");
         }
 
         try {
-            logger.info("Sending request to BREG service at: {}", bregServiceUrl);
+            logger.info("Sending request to BREG service at: {}", properties.getServiceUrl());
 
             HttpEntity<String> requestEntity = new HttpEntity<>(
                 sanitize(payload, submissionId, traceApiFailure),
@@ -51,7 +42,7 @@ public class BregService {
             
             // Send POST request
             ResponseEntity<String> response = restTemplate.postForEntity(
-                bregServiceUrl, 
+                properties.getServiceUrl(),
                 requestEntity, 
                 String.class
             );
@@ -72,9 +63,9 @@ public class BregService {
      * @return
      */
     private String sanitize(JsonNode payload, String submissionId, boolean traceApiFailure) {
-        ObjectNode modifiedPayload = payload.asObject();
+        ObjectNode modifiedPayload = payload.deepCopy().asObject();
 
-        for (String property : propertiesToRemove) {
+        for (String property : properties.getRemoveProperties()) {
             modifiedPayload.remove(property);
         }
 
