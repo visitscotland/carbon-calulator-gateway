@@ -1,5 +1,6 @@
 package com.visitscotland.ccg.service;
 
+import com.visitscotland.ccg.config.TraceApiProperties;
 import com.visitscotland.ccg.exception.TraceApiException;
 import com.visitscotland.ccg.exception.VsException;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,46 +17,31 @@ public class TraceAPIService {
 
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TraceAPIService.class);
 
+    static final String REGISTER_ENDPOINT = "/visitscotland/register";
+    static final String AUTH_ENDPOINT = "/auth/token";
+
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final TraceApiProperties properties;
 
-    @Value("${trace-api.key}")
-    String apiKey;
-
-    @Value("${trace-api.remove-properties}")
-    private String[] propertiesToRemove;
-
-    @Value("${trace-api.base-url}")
-    String baseUrl;
-
-    @Value("${trace-api.enabled}")
-    Boolean enabled;
-
-    public TraceAPIService(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public TraceAPIService(RestTemplate restTemplate, ObjectMapper objectMapper, TraceApiProperties properties) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.properties = properties;
     }
 
     public ResponseEntity<ObjectNode> register(ObjectNode payload, String submissionId) throws VsException {
-        if (Boolean.TRUE.equals(enabled)) {
-            String token = getAuthenticationToken();
-            String sanitizedPayload = sanitize(payload, submissionId);
-            ResponseEntity<ObjectNode> response = submit(baseUrl + "/visitscotland/register", sanitizedPayload, token);
-            if (!response.getStatusCode().is2xxSuccessful()) {
-                logger.warn("Failed to register with Trace API: {}, submissionId: {}", response.getStatusCode(), submissionId);
-            }
-            return response;
-        } else {
-            return ResponseEntity.ok(createSimpleResponse("Submission Skipped by configuration"));
+        if (!properties.isEnabled()) {
+            throw new VsException("The submission to Trace API service is not enabled");
         }
-    }
 
-    private ObjectNode createSimpleResponse (String message) {
-        ObjectNode node = new ObjectMapper().createObjectNode();
-        node.put("message", message);
-        node.put("code", 200);
-
-        return node;
+        String token = getAuthenticationToken();
+        String sanitizedPayload = sanitize(payload, submissionId);
+        ResponseEntity<ObjectNode> response = submit(properties.getBaseUrl() + REGISTER_ENDPOINT, sanitizedPayload, token);
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            logger.warn("Failed to register with Trace API: {}, submissionId: {}", response.getStatusCode(), submissionId);
+        }
+        return response;
     }
 
     /**
@@ -87,8 +73,8 @@ public class TraceAPIService {
      * Makes the request to the authentication service
      */
     private ResponseEntity<JsonNode> authenticate(){
-        return restTemplate.postForEntity(baseUrl + "/auth/token",
-                new HttpEntity<>("", getHeaders(apiKey)), JsonNode.class);
+        return restTemplate.postForEntity(properties.getBaseUrl() + AUTH_ENDPOINT,
+                new HttpEntity<>("", getHeaders(properties.getApiKey())), JsonNode.class);
     }
 
     /**
@@ -100,7 +86,7 @@ public class TraceAPIService {
     private String sanitize(ObjectNode payload, String submissionId) {
         ObjectNode modifiedPayload = payload.asObject();
 
-        for (String property : propertiesToRemove) {
+        for (String property : properties.getRemoveProperties()) {
             modifiedPayload.remove(property);
         }
 
