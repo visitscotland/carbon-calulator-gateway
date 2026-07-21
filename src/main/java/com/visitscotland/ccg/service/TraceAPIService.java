@@ -22,7 +22,7 @@ public class TraceAPIService {
     @Value("${trace-api.key}")
     String apiKey;
 
-    @Value("${trace-api.remove.properties}")
+    @Value("${trace-api.remove-properties}")
     private String[] propertiesToRemove;
 
     @Value("${trace-api.base-url}")
