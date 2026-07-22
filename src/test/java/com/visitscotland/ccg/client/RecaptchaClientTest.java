@@ -1,4 +1,4 @@
-package com.visitscotland.ccg.service;
+package com.visitscotland.ccg.client;
 
 import com.visitscotland.ccg.config.ReCaptchaProperties;
 import com.visitscotland.recaptcha.ReCaptcha;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class RecaptchaServiceTest {
+class RecaptchaClientTest {
 
     @Mock
     private ReCaptcha reCaptcha;
@@ -30,7 +30,7 @@ class RecaptchaServiceTest {
 
     private ReCaptchaProperties properties;
 
-    private RecaptchaService service;
+    private RecaptchaClient service;
 
     @BeforeEach
     void setUp() {
@@ -39,7 +39,7 @@ class RecaptchaServiceTest {
         properties.setRecaptchaEnabled(true);
         properties.setSecretkey("secret");
 
-        service = new RecaptchaService(reCaptcha, networkUtils, properties);
+        service = new RecaptchaClient(reCaptcha, networkUtils, properties);
     }
 
     @Test

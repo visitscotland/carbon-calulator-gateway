@@ -2,9 +2,9 @@ package com.visitscotland.ccg.controller;
 
 import com.visitscotland.ccg.exception.TraceApiException;
 import com.visitscotland.ccg.exception.VsException;
-import com.visitscotland.ccg.service.BregService;
-import com.visitscotland.ccg.service.RecaptchaService;
-import com.visitscotland.ccg.service.TraceAPIService;
+import com.visitscotland.ccg.client.BregClient;
+import com.visitscotland.ccg.client.RecaptchaClient;
+import com.visitscotland.ccg.client.TraceApiClient;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,18 +21,15 @@ public class MainController {
 
     private final static Logger logger = LoggerFactory.getLogger(MainController.class);
 
-    private final BregService bregService;
-    private final RecaptchaService recaptchaService;
-    private final TraceAPIService traceAPIService;
-    private final GlobalExceptionHandler globalExceptionHandler;
+    private final BregClient bregService;
+    private final RecaptchaClient recaptchaService;
+    private final TraceApiClient traceAPIService;
 
 
-    public MainController(BregService bregService, RecaptchaService recaptchaService, TraceAPIService traceAPIService,
-                          GlobalExceptionHandler globalExceptionHandler) {
+    public MainController(BregClient bregService, RecaptchaClient recaptchaService, TraceApiClient traceAPIService) {
         this.bregService = bregService;
         this.recaptchaService = recaptchaService;
         this.traceAPIService = traceAPIService;
-        this.globalExceptionHandler = globalExceptionHandler;
     }
 
     @GetMapping("/health")
@@ -56,7 +53,7 @@ public class MainController {
         boolean bregFailure = false;
 
         try {
-            traceAPIService.register(payload.deepCopy().asObject(), uuid);
+            traceAPIService.register(payload.asObject(), uuid);
         } catch (TraceApiException e) {
             traceapiFailure = true;
         }
@@ -68,7 +65,6 @@ public class MainController {
         }
 
         return processResponse(uuid, traceapiFailure, bregFailure);
-
     }
 
     private ResponseEntity<String> processResponse(String submissionId, boolean traceApiFailure, boolean bregFailure) {
@@ -89,8 +85,8 @@ public class MainController {
 
     private boolean isValidRecaptcha(HttpServletRequest request, JsonNode payload) {
         String captchaResponse;
-        if (payload.has(RecaptchaService.RECAPTCHA_FIELD_NAME)) {
-            captchaResponse = payload.get(RecaptchaService.RECAPTCHA_FIELD_NAME).asString();
+        if (payload.has(RecaptchaClient.RECAPTCHA_FIELD_NAME)) {
+            captchaResponse = payload.get(RecaptchaClient.RECAPTCHA_FIELD_NAME).asString();
         } else {
             captchaResponse = "";
         }

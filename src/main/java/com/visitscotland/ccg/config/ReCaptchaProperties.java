@@ -5,19 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "recaptcha")
 public class ReCaptchaProperties {
 
-    private String publicKey;
-
     private String secretkey;
 
     private boolean enabled;
-
-    public String getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
-    }
 
     public String getSecretkey() {
         return secretkey;

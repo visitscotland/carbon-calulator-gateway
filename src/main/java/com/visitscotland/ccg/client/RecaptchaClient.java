@@ -1,4 +1,4 @@
-package com.visitscotland.ccg.service;
+package com.visitscotland.ccg.client;
 
 import com.visitscotland.ccg.config.ReCaptchaProperties;
 import com.visitscotland.recaptcha.ReCaptcha;
@@ -12,18 +12,18 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class RecaptchaService {
+public class RecaptchaClient {
 
     private static final String HEADER_FORWARDED = "x-forwarded-for";
     public static final String RECAPTCHA_FIELD_NAME = ReCaptcha.RECAPTCHA_RESPONSE_FIELD_NAME;
 
-    private static final Logger logger = LogManager.getLogger(RecaptchaService.class);
+    private static final Logger logger = LogManager.getLogger(RecaptchaClient.class);
 
     private final ReCaptcha reCaptcha;
     private final NetworkUtils networkUtils;
     private final ReCaptchaProperties properties;
 
-    public RecaptchaService(ReCaptcha reCaptcha, NetworkUtils networkUtils, ReCaptchaProperties properties) {
+    public RecaptchaClient(ReCaptcha reCaptcha, NetworkUtils networkUtils, ReCaptchaProperties properties) {
         this.reCaptcha = reCaptcha;
         this.networkUtils = networkUtils;
         this.properties = properties;

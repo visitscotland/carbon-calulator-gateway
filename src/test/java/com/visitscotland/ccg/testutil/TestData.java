@@ -1,4 +1,4 @@
-package com.visitscotland.ccg;
+package com.visitscotland.ccg.testutil;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;

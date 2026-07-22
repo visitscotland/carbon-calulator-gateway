@@ -1,4 +1,4 @@
-package com.visitscotland.ccg.service;
+package com.visitscotland.ccg.client;
 
 import com.visitscotland.ccg.config.TraceApiProperties;
 import com.visitscotland.ccg.exception.TraceApiException;
@@ -12,9 +12,9 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 @Service
-public class TraceAPIService {
+public class TraceApiClient {
 
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TraceAPIService.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TraceApiClient.class);
 
     static final String REGISTER_ENDPOINT = "/visitscotland/register";
     static final String AUTH_ENDPOINT = "/auth/token";
@@ -23,7 +23,7 @@ public class TraceAPIService {
     private final ObjectMapper objectMapper;
     private final TraceApiProperties properties;
 
-    public TraceAPIService(RestTemplate restTemplate, ObjectMapper objectMapper, TraceApiProperties properties) {
+    public TraceApiClient(RestTemplate restTemplate, ObjectMapper objectMapper, TraceApiProperties properties) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.properties = properties;

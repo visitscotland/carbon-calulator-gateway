@@ -1,6 +1,6 @@
-package com.visitscotland.ccg.service;
+package com.visitscotland.ccg.client;
 
-import com.visitscotland.ccg.TestData;
+import com.visitscotland.ccg.testutil.TestData;
 import com.visitscotland.ccg.config.TraceApiProperties;
 import com.visitscotland.ccg.exception.TraceApiException;
 import com.visitscotland.ccg.exception.VsException;
@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class TraceApiServiceTest {
+class TraceApiClientTest {
 
     private static final String BASE_URL = "https://trace-api";
     private static final String API_KEY = "my-api-key";
@@ -37,7 +37,7 @@ class TraceApiServiceTest {
 
     private TraceApiProperties properties;
 
-    private TraceAPIService service;
+    private TraceApiClient service;
 
     @BeforeEach
     void setUp() {
@@ -48,7 +48,7 @@ class TraceApiServiceTest {
         properties.setEnabled(true);
         properties.setRemoveProperties(new String[]{"removeMe"});
 
-        service = new TraceAPIService(restTemplate, objectMapper, properties);
+        service = new TraceApiClient(restTemplate, objectMapper, properties);
     }
 
     @Test
@@ -56,7 +56,7 @@ class TraceApiServiceTest {
     void shouldReturnAuthenticationToken() {
         ObjectNode response = new TestData().add("payload", payload -> payload.add("token", "TOKEN123")).objectNode();
 
-        when(restTemplate.postForEntity(eq(BASE_URL + TraceAPIService.AUTH_ENDPOINT), any(HttpEntity.class), eq(JsonNode.class))).thenReturn(ResponseEntity.ok(response));
+        when(restTemplate.postForEntity(eq(BASE_URL + TraceApiClient.AUTH_ENDPOINT), any(HttpEntity.class), eq(JsonNode.class))).thenReturn(ResponseEntity.ok(response));
 
         String token = service.getAuthenticationToken();
 
@@ -116,8 +116,8 @@ class TraceApiServiceTest {
     @Test
     @DisplayName("Should authenticate before submitting the registration")
     void shouldAuthenticateBeforeSubmitting() {
-        when(restTemplate.postForEntity(eq(BASE_URL + TraceAPIService.AUTH_ENDPOINT), any(HttpEntity.class), eq(JsonNode.class))).thenReturn(authenticationResponse());
-        when(restTemplate.exchange(eq(BASE_URL + TraceAPIService.REGISTER_ENDPOINT), eq(HttpMethod.PUT), any(HttpEntity.class), eq(ObjectNode.class))).thenReturn(ResponseEntity.ok(TestData.simpleObjectNode()));
+        when(restTemplate.postForEntity(eq(BASE_URL + TraceApiClient.AUTH_ENDPOINT), any(HttpEntity.class), eq(JsonNode.class))).thenReturn(authenticationResponse());
+        when(restTemplate.exchange(eq(BASE_URL + TraceApiClient.REGISTER_ENDPOINT), eq(HttpMethod.PUT), any(HttpEntity.class), eq(ObjectNode.class))).thenReturn(ResponseEntity.ok(TestData.simpleObjectNode()));
 
         service.register(TestData.simpleObjectNode(), "submission123");
 

@@ -1,4 +1,4 @@
-package com.visitscotland.ccg.service;
+package com.visitscotland.ccg.client;
 
 import com.visitscotland.ccg.config.BregProperties;
 import com.visitscotland.ccg.exception.VsException;
@@ -12,15 +12,15 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 @Service
-public class BregService {
+public class BregClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(BregService.class);
+    private static final Logger logger = LoggerFactory.getLogger(BregClient.class);
     
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final BregProperties properties;
 
-    public BregService(RestTemplate restTemplate, ObjectMapper objectMapper, BregProperties properties) {
+    public BregClient(RestTemplate restTemplate, ObjectMapper objectMapper, BregProperties properties) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.properties = properties;

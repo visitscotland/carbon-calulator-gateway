@@ -1,4 +1,4 @@
-package com.visitscotland.ccg.service;
+package com.visitscotland.ccg.client;
 
 import com.visitscotland.ccg.config.BregProperties;
 import com.visitscotland.ccg.exception.VsException;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BregServiceTest {
+class BregClientTest {
 
     private  static final String URL = "http://localhost/breg";
 
@@ -37,7 +37,7 @@ class BregServiceTest {
 
     private final ObjectMapper json = new ObjectMapper();
 
-    private BregService service;
+    private BregClient service;
 
     @BeforeEach
     void setUp() {
@@ -47,7 +47,7 @@ class BregServiceTest {
         properties.setEnabled(true);
         properties.setServiceUrl(URL);
 
-        service = new BregService(restTemplate, objectMapper, properties);
+        service = new BregClient(restTemplate, objectMapper, properties);
     }
 
     @Test
