@@ -1,12 +1,12 @@
 package com.visitscotland.ccg.service;
 
+import com.visitscotland.ccg.config.ReCaptchaProperties;
 import com.visitscotland.recaptcha.ReCaptcha;
 import com.visitscotland.utils.Contract;
 import com.visitscotland.utils.info.NetworkUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,21 +19,14 @@ public class RecaptchaService {
 
     private static final Logger logger = LogManager.getLogger(RecaptchaService.class);
 
-    @Value("${recaptcha.publickey}")
-    private String publicKey;
-
-    @Value("${recaptcha.secretkey}")
-    private String secretkey;
-
-    @Value("${recaptcha.enabled}")
-    private boolean isRecaptchaEnabled;
-
     private final ReCaptcha reCaptcha;
     private final NetworkUtils networkUtils;
+    private final ReCaptchaProperties properties;
 
-    public RecaptchaService(ReCaptcha reCaptcha, NetworkUtils networkUtils) {
+    public RecaptchaService(ReCaptcha reCaptcha, NetworkUtils networkUtils, ReCaptchaProperties properties) {
         this.reCaptcha = reCaptcha;
         this.networkUtils = networkUtils;
+        this.properties = properties;
     }
 
     public boolean isValidRecaptcha(HttpServletRequest request, String captchaResponse) {
@@ -42,11 +35,11 @@ public class RecaptchaService {
     }
 
     private boolean captchaCheck(String remoteAddr, String captchaResponse) {
-        if (!isRecaptchaEnabled) {
+        if (!properties.isRecaptchaEnabled()) {
             logger.warn("The recaptcha validation has been disabled.");
             return true;
         } else if (!Contract.isEmpty(captchaResponse)) {
-            String secretKey = this.secretkey;
+            String secretKey = properties.getSecretkey();
             try {
                 if (reCaptcha.isValid(remoteAddr, captchaResponse, secretKey)) {
                     logger.debug("recaptcha success");
