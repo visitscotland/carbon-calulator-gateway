@@ -3,7 +3,6 @@ package com.visitscotland.ccg.service;
 import com.visitscotland.ccg.config.TraceApiProperties;
 import com.visitscotland.ccg.exception.TraceApiException;
 import com.visitscotland.ccg.exception.VsException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -55,8 +54,9 @@ public class TraceAPIService {
     public String getAuthenticationToken() throws TraceApiException {
         try {
             ResponseEntity<JsonNode> authentication = authenticate();
-            if (authentication.hasBody() && authentication.getBody().has("payload")) {
-                ObjectNode payload = authentication.getBody().get("payload").asObject();
+            JsonNode body = authentication.getBody();
+            if (body != null && body.has("payload")) {
+                ObjectNode payload = body.get("payload").asObject();
                 if (payload.has("token")) {
                     return payload.get("token").asString();
                 }
@@ -64,9 +64,10 @@ public class TraceAPIService {
         } catch (HttpClientErrorException e) {
             logger.error("Failed to authenticate with Trace API. Status code: {}, message: {}",
                     e.getStatusCode(), e.getMessage());
+            throw new TraceApiException("Failed to authenticate with Trace API. Status code: " + e.getStatusCode(), e);
         }
 
-        throw new TraceApiException("Failed to authenticate with Trace API");
+        throw new TraceApiException("Failed to authenticate with Trace API. The response did not contain a token");
     }
 
     /**
@@ -84,7 +85,7 @@ public class TraceAPIService {
      * @return
      */
     private String sanitize(ObjectNode payload, String submissionId) {
-        ObjectNode modifiedPayload = payload.asObject();
+        ObjectNode modifiedPayload = payload.deepCopy().asObject();
 
         for (String property : properties.getRemoveProperties()) {
             modifiedPayload.remove(property);
