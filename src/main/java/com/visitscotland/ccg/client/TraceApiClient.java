@@ -3,6 +3,7 @@ package com.visitscotland.ccg.client;
 import com.visitscotland.ccg.config.TraceApiProperties;
 import com.visitscotland.ccg.exception.TraceApiException;
 import com.visitscotland.ccg.exception.VsException;
+import com.visitscotland.ccg.payload.SubmissionPayloadTransformer;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -22,11 +23,14 @@ public class TraceApiClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final TraceApiProperties properties;
+    private final SubmissionPayloadTransformer transformer;
 
-    public TraceApiClient(RestTemplate restTemplate, ObjectMapper objectMapper, TraceApiProperties properties) {
+    public TraceApiClient(RestTemplate restTemplate, ObjectMapper objectMapper, TraceApiProperties properties,
+                          SubmissionPayloadTransformer transformer) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.properties = properties;
+        this.transformer = transformer;
     }
 
     public ResponseEntity<ObjectNode> register(ObjectNode payload, String submissionId) throws VsException {
@@ -85,13 +89,7 @@ public class TraceApiClient {
      * @return
      */
     private String sanitize(ObjectNode payload, String submissionId) {
-        ObjectNode modifiedPayload = payload.deepCopy().asObject();
-
-        for (String property : properties.getRemoveProperties()) {
-            modifiedPayload.remove(property);
-        }
-
-        modifiedPayload.put("vsUID", submissionId);
+        ObjectNode modifiedPayload = transformer.transform(payload, submissionId, properties.getRemoveProperties());
 
         return objectMapper.writeValueAsString(modifiedPayload);
     }

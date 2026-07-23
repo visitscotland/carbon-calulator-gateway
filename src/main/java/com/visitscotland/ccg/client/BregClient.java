@@ -2,6 +2,7 @@ package com.visitscotland.ccg.client;
 
 import com.visitscotland.ccg.config.BregProperties;
 import com.visitscotland.ccg.exception.VsException;
+import com.visitscotland.ccg.payload.SubmissionPayloadTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -18,11 +19,13 @@ public class BregClient {
     
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final SubmissionPayloadTransformer payloadTransformer;
     private final BregProperties properties;
 
-    public BregClient(RestTemplate restTemplate, ObjectMapper objectMapper, BregProperties properties) {
+    public BregClient(RestTemplate restTemplate, ObjectMapper objectMapper, SubmissionPayloadTransformer payloadTransformer, BregProperties properties) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.payloadTransformer = payloadTransformer;
         this.properties = properties;
     }
 
@@ -63,13 +66,8 @@ public class BregClient {
      * @return
      */
     private String sanitize(JsonNode payload, String submissionId, boolean traceApiFailure) {
-        ObjectNode modifiedPayload = payload.deepCopy().asObject();
+        ObjectNode modifiedPayload = payloadTransformer.transform(payload, submissionId, properties.getRemoveProperties());
 
-        for (String property : properties.getRemoveProperties()) {
-            modifiedPayload.remove(property);
-        }
-
-        modifiedPayload.put("vsUID", submissionId);
         if (traceApiFailure) {
             modifiedPayload.put("traceApiFailure", traceApiFailure);
         }
