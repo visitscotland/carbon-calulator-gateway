@@ -1,5 +1,6 @@
 package com.visitscotland.ccg.client;
 
+import com.visitscotland.ccg.payload.SubmissionPayloadTransformer;
 import com.visitscotland.ccg.testutil.TestData;
 import com.visitscotland.ccg.config.TraceApiProperties;
 import com.visitscotland.ccg.exception.TraceApiException;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.*;
@@ -39,6 +41,9 @@ class TraceApiClientTest {
 
     private TraceApiClient service;
 
+    @Mock
+    private SubmissionPayloadTransformer transformer;
+
     @BeforeEach
     void setUp() {
 
@@ -48,7 +53,7 @@ class TraceApiClientTest {
         properties.setEnabled(true);
         properties.setRemoveProperties(new String[]{"removeMe"});
 
-        service = new TraceApiClient(restTemplate, objectMapper, properties);
+        service = new TraceApiClient(restTemplate, objectMapper, properties, transformer);
     }
 
     @Test
@@ -116,10 +121,13 @@ class TraceApiClientTest {
     @Test
     @DisplayName("Should authenticate before submitting the registration")
     void shouldAuthenticateBeforeSubmitting() {
+        ObjectNode payload = TestData.simpleObjectNode();
+
+        when(transformer.transform(payload, "submission123", properties.getRemoveProperties())).thenReturn(payload);
         when(restTemplate.postForEntity(eq(BASE_URL + TraceApiClient.AUTH_ENDPOINT), any(HttpEntity.class), eq(JsonNode.class))).thenReturn(authenticationResponse());
         when(restTemplate.exchange(eq(BASE_URL + TraceApiClient.REGISTER_ENDPOINT), eq(HttpMethod.PUT), any(HttpEntity.class), eq(ObjectNode.class))).thenReturn(ResponseEntity.ok(TestData.simpleObjectNode()));
 
-        service.register(TestData.simpleObjectNode(), "submission123");
+        service.register(payload, "submission123");
 
         //Validate the order of events
         InOrder order = inOrder(restTemplate);
@@ -129,59 +137,20 @@ class TraceApiClientTest {
     }
 
     @Test
-    @DisplayName("Should remove configured properties before submitting the payload")
-    void shouldRemoveConfiguredProperties() {
-
-        @SuppressWarnings("rawtypes")
-        ArgumentCaptor<HttpEntity> entityCaptor = ArgumentCaptor.forClass(HttpEntity.class);
-
-        when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(JsonNode.class)))
-                .thenReturn(authenticationResponse());
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.PUT), entityCaptor.capture(), eq(ObjectNode.class)))
-                .thenReturn(ResponseEntity.ok(TestData.simpleObjectNode()));
-
-        ObjectNode payload = new TestData()
-                .add("name", "Developer")
-                .add("removeMe", "value")
-                .objectNode();
-
-        service.register(payload, "123");
-
-        ObjectNode body = objectMapper.readValue((String) entityCaptor.getValue().getBody(), ObjectNode.class);
-
-        assertTrue(body.has("name"));
-        assertFalse(body.has("removeMe"));
-    }
-
-    @Test
-    @DisplayName("Should include the submission ID in the outgoing payload")
-    void shouldIncludeSubmissionId() {
-        @SuppressWarnings("rawtypes") ArgumentCaptor<HttpEntity> entityCaptor = ArgumentCaptor.forClass(HttpEntity.class);
-
-        when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(JsonNode.class)))
-                .thenReturn(authenticationResponse());
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.PUT), entityCaptor.capture(), eq(ObjectNode.class)))
-                .thenReturn(ResponseEntity.ok(TestData.simpleObjectNode()));
-
-        service.register(TestData.simpleObjectNode(), "submission123");
-
-        ObjectNode body = objectMapper.readValue((String) entityCaptor.getValue().getBody(), ObjectNode.class);
-
-        assertEquals("submission123", body.path("vsUID").asString());
-    }
-
-    @Test
     @DisplayName("Should send the authentication token in the Authorization header")
     void shouldSendAuthenticationToken() {
         @SuppressWarnings("rawtypes")
         ArgumentCaptor<HttpEntity> entityCaptor = ArgumentCaptor.forClass(HttpEntity.class);
 
+        ObjectNode payload = TestData.simpleObjectNode();
+
+        when(transformer.transform(payload, "123", properties.getRemoveProperties())).thenReturn(payload);
         when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(JsonNode.class)))
                 .thenReturn(authenticationResponse());
         when(restTemplate.exchange(anyString(), eq(HttpMethod.PUT), entityCaptor.capture(), eq(ObjectNode.class)))
                 .thenReturn(ResponseEntity.ok(TestData.simpleObjectNode()));
 
-        service.register(TestData.simpleObjectNode(), "123");
+        service.register(payload, "123");
 
         assertEquals("TOKEN123", entityCaptor.getValue().getHeaders().getFirst("Authorization"));
     }
@@ -193,12 +162,15 @@ class TraceApiClientTest {
         @SuppressWarnings("rawtypes")
         ArgumentCaptor<HttpEntity> entityCaptor = ArgumentCaptor.forClass(HttpEntity.class);
 
+        ObjectNode payload = TestData.simpleObjectNode();
+
+        when(transformer.transform(payload, "123", properties.getRemoveProperties())).thenReturn(payload);
         when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(JsonNode.class)))
                 .thenReturn(authenticationResponse());
         when(restTemplate.exchange(anyString(), eq(HttpMethod.PUT), entityCaptor.capture(), eq(ObjectNode.class)))
                 .thenReturn(ResponseEntity.ok(TestData.simpleObjectNode()));
 
-        service.register(TestData.simpleObjectNode(), "123");
+        service.register(payload, "123");
 
         assertEquals(MediaType.APPLICATION_JSON, entityCaptor.getValue().getHeaders().getContentType());
     }
@@ -209,6 +181,7 @@ class TraceApiClientTest {
         HttpClientErrorException exception = new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         ObjectNode payload = TestData.simpleObjectNode();
 
+        when(transformer.transform(payload, "123", properties.getRemoveProperties())).thenReturn(payload);
         when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(JsonNode.class)))
                 .thenReturn(authenticationResponse());
         when(restTemplate.exchange(anyString(), eq(HttpMethod.PUT), any(HttpEntity.class), eq(ObjectNode.class)))

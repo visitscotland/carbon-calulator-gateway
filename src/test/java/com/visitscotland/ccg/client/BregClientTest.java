@@ -2,6 +2,8 @@ package com.visitscotland.ccg.client;
 
 import com.visitscotland.ccg.config.BregProperties;
 import com.visitscotland.ccg.exception.VsException;
+import com.visitscotland.ccg.payload.SubmissionPayloadTransformer;
+import com.visitscotland.ccg.testutil.TestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,9 @@ class BregClientTest {
     @Mock
     private RestTemplate restTemplate;
 
+    @Mock
+    private SubmissionPayloadTransformer transformer;
+
     @Spy
     private ObjectMapper objectMapper;
 
@@ -47,7 +52,7 @@ class BregClientTest {
         properties.setEnabled(true);
         properties.setServiceUrl(URL);
 
-        service = new BregClient(restTemplate, objectMapper, properties);
+        service = new BregClient(restTemplate, objectMapper, transformer, properties);
     }
 
     @Test
@@ -91,52 +96,15 @@ class BregClientTest {
     }
 
     @Test
-    @DisplayName("Should remove configured properties before serialising the payload")
-    void shouldRemoveConfiguredProperties() {
-        @SuppressWarnings("rawtypes")
-        ArgumentCaptor<ObjectNode> nodeCaptor = ArgumentCaptor.forClass(ObjectNode.class);
-        ObjectNode payload = json.createObjectNode();
-        payload.put("keep", "value");
-        payload.put("removeMe", "x");
-        payload.put("removeMeToo", "y");
-
-        when(restTemplate.postForEntity(eq(URL), any(), eq(String.class)))
-                .thenReturn(ResponseEntity.ok("OK"));
-
-        service.sendRequest(payload, "123", false);
-        verify(objectMapper).writeValueAsString(nodeCaptor.capture());
-
-        assertTrue(nodeCaptor.getValue().has("keep"));
-        assertFalse(nodeCaptor.getValue().has("removeMe"));
-        assertFalse(nodeCaptor.getValue().has("removeMeToo"));
-    }
-
-    @Test
-    @DisplayName("Should add the submission ID to the outgoing payload")
-    void shouldAddSubmissionId() {
-        ArgumentCaptor<ObjectNode> nodeCaptor = ArgumentCaptor.forClass(ObjectNode.class);
-
-
-        when(restTemplate.postForEntity(eq(URL), any(), eq(String.class)))
-                .thenReturn(ResponseEntity.ok("OK"));
-
-        service.sendRequest(json.createObjectNode(), "submission123", false);
-
-        verify(restTemplate).postForEntity(eq(URL), any(), eq(String.class));
-        verify(objectMapper).writeValueAsString(nodeCaptor.capture());
-        assertEquals("submission123", nodeCaptor.getValue().path("vsUID").asString());
-    }
-
-    @Test
     @DisplayName("Should include the traceApiFailure flag when requested")
     void shouldIncludeTraceApiFailureFlag() {
+        ObjectNode payload = TestData.simpleObjectNode();
         ArgumentCaptor<ObjectNode> nodeCaptor = ArgumentCaptor.forClass(ObjectNode.class);
 
+        when(transformer.transform(payload, "123", properties.getRemoveProperties())).thenReturn(payload);
+        when(restTemplate.postForEntity(eq(URL), any(), eq(String.class))).thenReturn(ResponseEntity.ok("OK"));
 
-        when(restTemplate.postForEntity(eq(URL), any(), eq(String.class)))
-                .thenReturn(ResponseEntity.ok("OK"));
-
-        service.sendRequest(json.createObjectNode(), "123", true);
+        service.sendRequest(payload, "123", true);
 
         verify(restTemplate).postForEntity(eq(URL), any(), eq(String.class));
         verify(objectMapper).writeValueAsString(nodeCaptor.capture());
@@ -147,11 +115,13 @@ class BregClientTest {
     @DisplayName("Should omit the traceApiFailure flag when not required")
     void shouldNotIncludeTraceApiFailureFlag() {
         ArgumentCaptor<ObjectNode> nodeCaptor = ArgumentCaptor.forClass(ObjectNode.class);
+        ObjectNode payload = TestData.simpleObjectNode();
 
+        when(transformer.transform(payload, "123", properties.getRemoveProperties())).thenReturn(payload);
         when(restTemplate.postForEntity(eq(URL), any(), eq(String.class)))
                 .thenReturn(ResponseEntity.ok("OK"));
 
-        service.sendRequest(json.createObjectNode(), "123", false);
+        service.sendRequest(payload, "123", false);
 
         verify(objectMapper).writeValueAsString(nodeCaptor.capture());
         assertFalse(nodeCaptor.getValue().has("traceApiFailure"));

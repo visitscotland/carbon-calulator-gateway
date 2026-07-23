@@ -1,11 +1,12 @@
 package com.visitscotland.ccg.controller;
 
-import com.visitscotland.ccg.testutil.TestData;
-import com.visitscotland.ccg.exception.TraceApiException;
-import com.visitscotland.ccg.exception.VsException;
 import com.visitscotland.ccg.client.BregClient;
 import com.visitscotland.ccg.client.RecaptchaClient;
 import com.visitscotland.ccg.client.TraceApiClient;
+import com.visitscotland.ccg.exception.TraceApiException;
+import com.visitscotland.ccg.exception.VsException;
+import com.visitscotland.ccg.notification.EmailNotificationService;
+import com.visitscotland.ccg.testutil.TestData;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,9 @@ class MainControllerTest {
 
     @Mock
     private HttpServletRequest request;
+
+    @Mock
+    private EmailNotificationService emailNotificationService;
 
     @InjectMocks
     private MainController controller;

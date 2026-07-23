@@ -1,5 +1,6 @@
 package com.visitscotland.ccg.notification;
 
+import com.visitscotland.ccg.config.EmailProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,33 +28,43 @@ class EmailNotificationServiceTest {
     private ArgumentCaptor<SimpleMailMessage> messageCaptor;
 
     private EmailNotificationService service;
+    private EmailProperties properties;
 
     @BeforeEach
     void setUp() {
-        service = new EmailNotificationService(mailSender);
+        properties = new EmailProperties();
+        properties.setEnabled(true);
+        properties.setSubject("This is an email notification");
+
+        service = new EmailNotificationService(properties, mailSender);
     }
 
     @Test
-    @DisplayName("Send email")
+    @DisplayName("An email is sent with the submission ID")
     void shouldSendEmail() {
-
-        String[] recipients = {
+        String[] recipients = new String[]{
                 "mail-whatcher-1@visitscotland.com",
                 "mail-whatcher-2@visitscotland.com"
         };
+        String subject = "This is an email notification";
+        String submissionId = UUID.randomUUID().toString();
 
-        String subject = "Test Subject";
-        String body = "This is a test email.";
+        properties.setRecipients (new String[]{
+            "mail-whatcher-1@visitscotland.com",
+            "mail-whatcher-2@visitscotland.com"
+        });
+        properties.setSubject(subject);
 
-        service.notify(body, subject, recipients);
+        service.notify(null, null, submissionId);
 
         verify(mailSender).send(messageCaptor.capture());
 
         SimpleMailMessage message = messageCaptor.getValue();
 
         assertArrayEquals(recipients, message.getTo());
-        assertEquals(subject, message.getSubject());
-        assertEquals(body, message.getText());
+        assertEquals("This is an email notification", message.getSubject());
+        assertNotNull(message.getText());
+        assertTrue(message.getText().contains(submissionId));
     }
 
     @Test
@@ -63,7 +76,7 @@ class EmailNotificationServiceTest {
 
         doThrow(exception).when(mailSender).send(any(SimpleMailMessage.class));
 
-        service.notify("Body","Subject", new String[]{"test@example.com"});
+        service.notify(null,null, null);
 
         verify(mailSender).send(any(SimpleMailMessage.class));
     }

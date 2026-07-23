@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 @Service
 public class SubmissionPayloadTransformer {
 
+    static final String SUBMISSION_ID = "vsUID";
+
     public ObjectNode transform(JsonNode payload, String submissionId, String[] removeFields) {
         ObjectNode modifiedPayload = payload.deepCopy().asObject();
 
@@ -17,7 +19,7 @@ public class SubmissionPayloadTransformer {
             modifiedPayload.remove(property);
         }
 
-        modifiedPayload.put("vsUID", submissionId);
+        modifiedPayload.put(SUBMISSION_ID, submissionId);
 
         normalizeVariantFields(modifiedPayload);
 
