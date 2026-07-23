@@ -43,4 +43,49 @@ class SubmissionPayloadTransformerTest {
         assertEquals("submission123", modifiedPayload.path(SubmissionPayloadTransformer.SUBMISSION_ID).asString());
     }
 
+    @Test
+    @DisplayName("Should create the base property from a variant field")
+    void shouldCreateBasePropertyFromVariant() {
+        ObjectNode payload = new TestData ()
+                .add("businessSubSector---accommodation", "HOTELS")
+                .objectNode();
+
+        ObjectNode modifiedPayload = transformer.transform(payload, "13", new String[0]);
+
+        assertEquals("HOTELS", modifiedPayload.path("businessSubSector").asString());
+        assertFalse(modifiedPayload.has("businessSubSector---accommodation"));
+    }
+
+    @Test
+    @DisplayName("Should not overwrite an existing base property")
+    void shouldNotOverwriteExistingProperty() {
+        ObjectNode payload = new TestData()
+                .add("businessSubSector", "ORIGINAL")
+                .add("businessSubSector---accommodation", "HOTELS")
+                .objectNode();
+
+        ObjectNode modifiedPayload = transformer.transform(payload, "13", new String[0]);
+
+        assertEquals("ORIGINAL", modifiedPayload.path("businessSubSector").asText());
+        assertFalse(modifiedPayload.has("businessSubSector---accommodation"));
+    }
+
+    @Test
+    @DisplayName("Should ignore empty variant values")
+    void shouldIgnoreEmptyVariantValues() {
+        ObjectNode payload = new TestData ()
+                .add("businessSubSector---events", "")
+                .add("businessSubSector---accommodation", "HOTELS")
+                .add("businessSubSector---active", "")
+                .objectNode();
+
+        ObjectNode modifiedPayload = transformer.transform(payload, "13", new String[0]);
+
+        assertEquals("HOTELS", modifiedPayload.path("businessSubSector").asString());
+        assertFalse(modifiedPayload.has("businessSubSector---events"));
+        assertFalse(modifiedPayload.has("businessSubSector---accommodation"));
+        assertFalse(modifiedPayload.has("businessSubSector---active"));
+    }
+
+
 }

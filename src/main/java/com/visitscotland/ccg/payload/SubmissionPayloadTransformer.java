@@ -1,5 +1,6 @@
 package com.visitscotland.ccg.payload;
 
+import com.visitscotland.utils.Contract;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.ObjectNode;
@@ -40,7 +41,7 @@ public class SubmissionPayloadTransformer {
 
         for (String variant: variants) {
             JsonNode value = modifiedPayload.get(variant);
-            if (!value.isNull() && !value.isEmpty()) {
+            if (!value.isNull() && !Contract.isEmpty(value.asString())) {
                 modifiedPayload.putIfAbsent(variant.substring(0, variant.lastIndexOf(DELIMITER)), value);
             }
             modifiedPayload.remove(variant);
