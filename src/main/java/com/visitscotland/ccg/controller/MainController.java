@@ -5,6 +5,7 @@ import com.visitscotland.ccg.exception.VsException;
 import com.visitscotland.ccg.client.BregClient;
 import com.visitscotland.ccg.client.RecaptchaClient;
 import com.visitscotland.ccg.client.TraceApiClient;
+import com.visitscotland.ccg.notification.EmailNotificationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +25,14 @@ public class MainController {
     private final BregClient bregService;
     private final RecaptchaClient recaptchaService;
     private final TraceApiClient traceAPIService;
+    private final EmailNotificationService emailNotificationService;
 
 
-    public MainController(BregClient bregService, RecaptchaClient recaptchaService, TraceApiClient traceAPIService) {
+    public MainController(BregClient bregService, RecaptchaClient recaptchaService, TraceApiClient traceAPIService, EmailNotificationService emailNotificationService) {
         this.bregService = bregService;
         this.recaptchaService = recaptchaService;
         this.traceAPIService = traceAPIService;
+        this.emailNotificationService = emailNotificationService;
     }
 
     @GetMapping("/health")
@@ -49,22 +52,31 @@ public class MainController {
     private ResponseEntity<String> processRequest(JsonNode payload) throws VsException {
         String uuid = UUID.randomUUID().toString();
         logger.info("Processing submission with UUID: {}", uuid);
-        boolean traceapiFailure = false;
-        boolean bregFailure = false;
+        TraceApiException traceApiException = null;
+        VsException vsException = null;
 
         try {
             traceAPIService.register(payload.asObject(), uuid);
         } catch (TraceApiException e) {
-            traceapiFailure = true;
+            logger.error(e.getApiMessage());
+            traceApiException = e;
         }
 
         try {
-            bregService.sendRequest(payload, uuid, traceapiFailure);
+            bregService.sendRequest(payload, uuid, (traceApiException != null));
         } catch (VsException e) {
-            bregFailure = true;
+            vsException = e;
         }
 
-        return processResponse(uuid, traceapiFailure, bregFailure);
+        if (traceApiException != null || vsException != null) {
+            notify(traceApiException, vsException, uuid);
+        }
+
+        return processResponse(uuid, traceApiException!=null, vsException != null);
+    }
+
+    private void notify(TraceApiException traceApiException, VsException vsException, String uuid) {
+        emailNotificationService.notify(traceApiException, vsException, uuid);
     }
 
     private ResponseEntity<String> processResponse(String submissionId, boolean traceApiFailure, boolean bregFailure) {
