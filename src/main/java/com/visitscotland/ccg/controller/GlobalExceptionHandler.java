@@ -14,6 +14,7 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    /**  The final version of the application would react to error and this method is unlikely to be required */
     @ExceptionHandler(TraceApiException.class)
     public ResponseEntity<String> handleException(TraceApiException exception){
         if (exception.isApiError()) {
@@ -25,6 +26,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(exception.getStatusCode()).body(exception.getMessage());
     }
 
+    /** If the application where to Respond with JSON Payloads This could be a good way to send non-200 responses */
     @ExceptionHandler(VsException.class)
     public ResponseEntity<String> handleException(VsException exception){
         logger.error("Error processing request: {}", exception.getMessage(), exception);
