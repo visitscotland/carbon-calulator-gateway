@@ -12,7 +12,7 @@
     <artifactId>vs-carbon-calculator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>vs-carbon-calculator-gateway</name>
-    <description>vs-carbon-calculator-</description>
+    <description>vs-carbon-calculator-gateway</description>
 
     <properties>
         <java.version>17</java.version>
@@ -106,8 +106,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>9</source>
-                    <target>9</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
         </plugins>
