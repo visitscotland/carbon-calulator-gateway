@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>vs-carbon-calculator</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <name>vs-carbon-calculator-gateway</name>
     <description>vs-carbon-calculator-gateway</description>
 
