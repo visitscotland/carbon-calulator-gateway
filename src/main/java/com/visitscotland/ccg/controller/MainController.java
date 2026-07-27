@@ -37,7 +37,7 @@ public class MainController {
 
     @GetMapping("/health")
     public String health () {
-        return "Status OK!!";
+        return "Status OK!";
     }
 
     @PostMapping("/register")
