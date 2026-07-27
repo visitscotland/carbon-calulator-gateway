@@ -1,0 +1,46 @@
+### Health Endpoint. To validate the system is up.
+GET https://api.visitscotland.net/dev/submit/ccg/health
+Content-Type: application/json
+
+### Health Endpoint. To validate the system is up.
+GET https://api.visitscotland.net/dev/submit/ccg/info/properties
+Content-Type: application/json
+
+### Submits a sample registration request
+POST https://api.visitscotland.net/dev/submit/ccg/register
+Content-Type: application/json
+
+{
+
+  "email": "developer+0006@visitscotland.com",
+  "firstName": "José ほせ",
+  "lastName": "Developer of VisitScotland",
+  "businessName": "BusyNessie Ltd.",
+  "experieinceLevel": "I_HAVE_NO_EXPERIENCE_WITH_CARBON_MEASUREMENT_AND_REPORTING",
+  "businessSector": "ACCOMMODATION",
+  "businessSubSector---accommodation": "HOTELS",
+  "businessSubSector---events": "",
+  "businessSubSector---active": "",
+  "location": "CITY_OF_EDINBURGH",
+  "businessType": "LIMITED_COMPANY",
+  "ftStaff": "11-250",
+
+  "consents": "carbon_calculator, All right!; Newsletter, Terms accepted; isla_consent, Also Accepted",
+  "activity_source": "Dev - Carbon Calculator",
+  "activity_description": "Business Support Hub Online Booking System (Activities) download",
+
+  "tourismBusiness": true,
+  "inScotland": true,
+  "supportNewsletter": true,
+  "emissionsUpdate": true,
+  "terms": true,
+  "g-recaptcha-response":"03AFcWeA5gJEe3or5LX3lqRKfqvtbQQhqVjwvUe0O6KgERJmPVfCBLI2l0EjOEjuV4GAIRZ5Ju04uWmeQ2hVY4bjO_E2mx2NOLyKfaBapinMGOld7zUdHN5uk8dg5-ThfiBwAlyz8K6MIHZb_H6tCz0ju4zlNfwNFaDZvA03Aa7RUN_LiLh-hIWidMqORjZ2zAV-Wm_-PuPSqMTBFvrao6geqVBo2r8_qHIyJ9Glwox40AVPoUI657yfPj-LCqDjhuWntZrByVh_ZgEb36o-qVA7A68ClBGj7ouAsb8FzApwPlzoQavQKoKylkvGu7QrB-77v_r8NrcrO2EUQK8v1clgLATq5qvBZuZuqRtfN9IOkSk3igK0XOGmS4aeI-0LcLx6Kps39UFHpKL2NrTXa1PFKfRqxZtUBAc8niafByov5EKavsGudNjR-gapbL1zmJZWft85PfK3dOqh9y2gwQL2gZFzW56AXXO_VzB5lIh6FikuSaZ7TPyhf5vMBCPThzOi_0fHLMIH7NaVyBpUkejNGYuS3aQUBkEhQy8fKzgHxDWEGgJAqNXWXJrennhvGdD_jgefZEjm6zVt4iUuFmgi_-zfPtBXiDTUn3freCs4AqILYzMzNM9jdKs-oikt5qzeq_BJfabyVMlk9o-vgikDGQmc00WapOArN6Buu4zUGz4DYzN_lFsPirfPa6A9UM1pX3nrrVG1V1s"
+}
+
+### Broken submission
+POST https://api.visitscotland.net/dev/submit/ccg/register
+Content-Type: application/json
+
+{
+  "g-recaptcha-response":"03AFcWeA5gJEe3or5LX3lqRKfqvtbQQhqVjwvUe0O6KgERJmPVfCBLI2l0EjOEjuV4GAIRZ5Ju04uWmeQ2hVY4bjO_E2mx2NOLyKfaBapinMGOld7zUdHN5uk8dg5-ThfiBwAlyz8K6MIHZb_H6tCz0ju4zlNfwNFaDZvA03Aa7RUN_LiLh-hIWidMqORjZ2zAV-Wm_-PuPSqMTBFvrao6geqVBo2r8_qHIyJ9Glwox40AVPoUI657yfPj-LCqDjhuWntZrByVh_ZgEb36o-qVA7A68ClBGj7ouAsb8FzApwPlzoQavQKoKylkvGu7QrB-77v_r8NrcrO2EUQK8v1clgLATq5qvBZuZuqRtfN9IOkSk3igK0XOGmS4aeI-0LcLx6Kps39UFHpKL2NrTXa1PFKfRqxZtUBAc8niafByov5EKavsGudNjR-gapbL1zmJZWft85PfK3dOqh9y2gwQL2gZFzW56AXXO_VzB5lIh6FikuSaZ7TPyhf5vMBCPThzOi_0fHLMIH7NaVyBpUkejNGYuS3aQUBkEhQy8fKzgHxDWEGgJAqNXWXJrennhvGdD_jgefZEjm6zVt4iUuFmgi_-zfPtBXiDTUn3freCs4AqILYzMzNM9jdKs-oikt5qzeq_BJfabyVMlk9o-vgikDGQmc00WapOArN6Buu4zUGz4DYzN_lFsPirfPa6A9UM1pX3nrrVG1V1s"
+}
