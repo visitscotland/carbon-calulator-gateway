@@ -7,15 +7,14 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class EmailNotificationService {
@@ -24,12 +23,13 @@ public class EmailNotificationService {
 
     private final EmailProperties properties;
     private final JavaMailSender mailSender;
-    private final ResourceLoader resourceLoader;
+    private final EmailComposer composer;
 
-    public EmailNotificationService(EmailProperties properties, JavaMailSender mailSender, ResourceLoader resourceLoader) {
+
+    public EmailNotificationService(EmailProperties properties, JavaMailSender mailSender, EmailComposer composer) {
         this.properties = properties;
         this.mailSender = mailSender;
-        this.resourceLoader = resourceLoader;
+        this.composer = composer;
     }
 
     public void notify(TraceApiException traceApiException, VsException vsException, String submissionId) {
@@ -46,34 +46,29 @@ public class EmailNotificationService {
     private String compose(TraceApiException traceApiException,
                            VsException vsException,
                            String submissionId) throws IOException {
+        Map<String, String> variables = new HashMap<>();
 
-        Resource resource = resourceLoader.getResource("classpath:templates/notification/error-notification.html");
+        variables.put("traceError", traceApiException == null ? "" :
+                "<li>Trace API responded with status code "
+                        + traceApiException.getStatusCode()
+                        + " and message: <pre>"
+                        + traceApiException.getApiMessage()
+                        + "</pre>"
+                        + "</li>");
 
-        String template = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-
-        template = template.replace("{{traceError}}",
-                traceApiException == null ? "" :
-                        "<li>Trace API responded with status code "
-                                + traceApiException.getStatusCode()
-                                + " and message: <pre>"
-                                + traceApiException.getApiMessage()
-                                + "</pre>"
-                                + "</li>");
-
-        template = template.replace("{{bregError}}",
-                vsException == null ? "" :
+        variables.put("bregError", vsException == null ? "" :
                         "<li>BREG responded with the error message: "
                                 + vsException.getMessage()
                                 + "</li>");
 
-        template = template.replace("{{recoveryNote}}",
+        variables.put("{{recoveryNote}}",
                 traceApiException == null || vsException == null
                         ? "<i>The submission is recoverable but needs to be manually processed.</i>"
                         : "<strong>The submission is not recoverable because neither service processed the data.</strong>");
 
-        template = template.replace("{{submissionId}}", submissionId);
+        variables.put("{{submissionId}}", submissionId);
 
-        return template;
+        return composer.compose("templates/notification/error-notification.html", variables);
     }
 
     public void send(String htmlMessage) throws MessagingException {
