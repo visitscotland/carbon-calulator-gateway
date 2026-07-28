@@ -35,7 +35,7 @@ public class RecaptchaClient {
     }
 
     private boolean captchaCheck(String remoteAddr, String captchaResponse) {
-        if (!properties.isRecaptchaEnabled()) {
+        if (!properties.isEnabled()) {
             logger.warn("The recaptcha validation has been disabled.");
             return true;
         } else if (!Contract.isEmpty(captchaResponse)) {
