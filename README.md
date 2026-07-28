@@ -16,6 +16,18 @@ The service allows users to register for an Isla Carbon Calculator assessment an
 
 --- 
 
+## Development
+
+The development documentation has been separated into dedicated documents to keep this README focused on the purpose and
+architecture of the application. The links below provide guidance on running, configuring, releasing, and maintaining 
+the service.
+
+- [Running the application](docs/running-the-application.md)
+- [Environments & Release](docs/release.md)
+- [Application Configuration](docs/configuration.md)
+- [CI/CD](https://jenkinssb.visitscotland.com/job/ccg/)
+
+---
 ## Architecture Overview
 
 ### Request Diagram
