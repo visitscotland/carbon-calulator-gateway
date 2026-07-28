@@ -16,12 +16,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import javax.security.auth.Subject;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +33,7 @@ class EmailNotificationServiceTest {
 
     @Captor
     private ArgumentCaptor<Map<String, String>> variablesCaptor;
+    private static final String SUBJECT = "Email Notification Service";
 
     private EmailNotificationService service;
     private EmailProperties properties;
@@ -44,21 +45,18 @@ class EmailNotificationServiceTest {
     void setUp(){
         properties = new EmailProperties();
         properties.setEnabled(true);
+        properties.setSubject(SUBJECT);
+        properties.setRecipients(new String[]{
+                "mail-whatcher-1@visitscotland.com",
+                "mail-whatcher-2@visitscotland.com"
+        });
         service = new EmailNotificationService(properties, mailSender, composer);
     }
 
     @Test
-    @DisplayName("An email is sent with the submission ID")
+    @DisplayName("An email is sent with the submission ID and information about errors")
     void shouldSendEmail() throws IOException, MessagingException {
-        String[] recipients = new String[]{
-                "mail-whatcher-1@visitscotland.com",
-                "mail-whatcher-2@visitscotland.com"
-        };
-        String subject = "This is an email notification";
         String submissionId = UUID.randomUUID().toString();
-
-        properties.setSubject(subject);
-        properties.setRecipients(recipients);
 
         MimeMessage mimeMessage = new MimeMessage((Session) null);
 
@@ -71,19 +69,19 @@ class EmailNotificationServiceTest {
         Map<String, String> map = variablesCaptor.getValue();
 
         assertEquals(2, mimeMessage.getAllRecipients().length);
-        assertEquals("This is an email notification", mimeMessage.getSubject());
+        assertEquals(SUBJECT, mimeMessage.getSubject());
         assertEquals(submissionId, map.get("submissionId"));
+        assertTrue(map.containsKey("traceError"));
+        assertTrue(map.containsKey("bregError"));
         assertNotNull(mimeMessage.getContent());
     }
 
     @Test
-    @DisplayName("It does not affect the caller when SMTP is unavailable")
+    @DisplayName("If an error happens during email composition, The caller does not get affected by it")
     void shouldThrowRuntimeExceptionWhenMailSendingFails() throws IOException {
 
-        when(mailSender.createMimeMessage()).thenThrow(new IOException("Template not found"));
+        when(composer.compose(any(), any())).thenThrow(new IOException("Template not found"));
 
         service.notify(null,null, null);
-
-        verify(composer).compose(anyString(), anyMap());
     }
 }

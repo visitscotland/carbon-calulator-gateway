@@ -61,12 +61,12 @@ public class EmailNotificationService {
                                 + vsException.getMessage()
                                 + "</li>");
 
-        variables.put("{{recoveryNote}}",
+        variables.put("recoveryNote",
                 traceApiException == null || vsException == null
                         ? "<i>The submission is recoverable but needs to be manually processed.</i>"
                         : "<strong>The submission is not recoverable because neither service processed the data.</strong>");
 
-        variables.put("{{submissionId}}", submissionId);
+        variables.put("submissionId", submissionId);
 
         return composer.compose("templates/notification/error-notification.html", variables);
     }

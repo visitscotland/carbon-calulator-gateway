@@ -17,11 +17,11 @@ public class ReCaptchaProperties {
         this.secretkey = secretkey;
     }
 
-    public boolean isRecaptchaEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
-    public void setRecaptchaEnabled(boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 }

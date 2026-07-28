@@ -36,7 +36,7 @@ class RecaptchaClientTest {
     void setUp() {
 
         properties = new ReCaptchaProperties();
-        properties.setRecaptchaEnabled(true);
+        properties.setEnabled(true);
         properties.setSecretkey("secret");
 
         service = new RecaptchaClient(reCaptcha, networkUtils, properties);
@@ -45,7 +45,7 @@ class RecaptchaClientTest {
     @Test
     @DisplayName("Should return true when reCAPTCHA validation is disabled")
     void shouldReturnTrueWhenRecaptchaIsDisabled() {
-        properties.setRecaptchaEnabled(false);
+        properties.setEnabled(false);
 
         assertTrue(service.isValidRecaptcha(request, "captcha"));
         verifyNoInteractions(reCaptcha);

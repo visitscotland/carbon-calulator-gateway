@@ -5,6 +5,7 @@ import com.visitscotland.ccg.client.RecaptchaClient;
 import com.visitscotland.ccg.client.TraceApiClient;
 import com.visitscotland.ccg.exception.TraceApiException;
 import com.visitscotland.ccg.exception.VsException;
+import com.visitscotland.ccg.model.RegisterResponse;
 import com.visitscotland.ccg.notification.EmailNotificationService;
 import com.visitscotland.ccg.testutil.TestData;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,7 +57,7 @@ class MainControllerTest {
 
         when(recaptchaService.isValidRecaptcha(any(), any())).thenReturn(false);
 
-        ResponseEntity<String> response =
+        ResponseEntity<RegisterResponse> response =
                 controller.register(TestData.simpleObjectNode(), request);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
@@ -75,7 +76,7 @@ class MainControllerTest {
         when(bregService.sendRequest(any(), anyString(), anyBoolean()))
                 .thenReturn(ResponseEntity.ok("OK"));
 
-        ResponseEntity<String> response =
+        ResponseEntity<RegisterResponse> response =
                 controller.register(TestData.simpleObjectNode(), request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -94,7 +95,7 @@ class MainControllerTest {
         when(bregService.sendRequest(any(), anyString(), anyBoolean()))
                 .thenReturn(ResponseEntity.ok("OK"));
 
-        ResponseEntity<String> response =
+        ResponseEntity<RegisterResponse> response =
                 controller.register(TestData.simpleObjectNode(), request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -144,7 +145,7 @@ class MainControllerTest {
         when(bregService.sendRequest(any(), anyString(), anyBoolean()))
                 .thenThrow(new VsException("Failure"));
 
-        ResponseEntity<String> response =
+        ResponseEntity<RegisterResponse> response =
                 controller.register(TestData.simpleObjectNode(), request);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
@@ -160,7 +161,7 @@ class MainControllerTest {
         when(bregService.sendRequest(any(), anyString(), anyBoolean()))
                 .thenReturn(ResponseEntity.ok("OK"));
 
-        ResponseEntity<String> response =
+        ResponseEntity<RegisterResponse> response =
                 controller.register(TestData.simpleObjectNode(), request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
