@@ -75,6 +75,7 @@ public class EmailNotificationService {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
 
+        helper.setFrom(properties.getSender());
         helper.setTo(properties.getRecipients());
         helper.setSubject(properties.getSubject());
         helper.setText(htmlMessage, true); // true = HTML

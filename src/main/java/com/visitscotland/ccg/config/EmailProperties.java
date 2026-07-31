@@ -8,6 +8,7 @@ public class EmailProperties {
     private String[] recipients;
     private String subject;
     private boolean enabled;
+    private String sender;
 
     public String[] getRecipients() {
         return recipients;
@@ -31,5 +32,13 @@ public class EmailProperties {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 }
