@@ -1,0 +1,197 @@
+{
+  "info": {
+    "_postman_id": "380feda1-bf1e-4191-a3d0-c8bab3063061",
+    "name": "Carbon Calc Gateway",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "id": "0d1b8b31-6f56-4e6a-b0e4-c0bd577411f2",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text",
+            "uuid": "9fc6dc56-21a8-430d-834a-3251bbafa37c",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "https://api.visitscotland.net/dev/submit/ccg/health",
+          "protocol": "https",
+          "host": [
+            "api",
+            "visitscotland",
+            "net"
+          ],
+          "path": [
+            "dev",
+            "submit",
+            "ccg",
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "200 request",
+      "id": "87b922c6-4b49-490b-8d59-440cb3d5ba64",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"developer+{{$timestamp}}@visitscotland.com\",\r\n  \"firstName\": \"Test\",\r\n  \"lastName\": \"Developer of VisitScotland\",\r\n  \"businessName\": \"BusyNessie Ltd.\",\r\n  \"experienceLevel\": \"I_HAVE_NO_EXPERIENCE_WITH_CARBON_MEASUREMENT_AND_REPORTING\",\r\n  \"businessSector\": \"ACCOMMODATION\",\r\n  \"businessSubSector---accommodation\": \"HOTELS\",\r\n  \"businessSubSector---events\": \"\",\r\n  \"businessSubSector---active\": \"\",\r\n  \"location\": \"CITY_OF_EDINBURGH\",\r\n  \"businessType\": \"LIMITED_COMPANY\",\r\n  \"ftStaff\": \"11-250\",\r\n  \"consents\": \"carbon_calculator, All right!; Newsletter, Terms accepted; isla_consent, Also Accepted\",\r\n  \"activity_source\": \"Dev - Carbon Calculator\",\r\n  \"activity_description\": \"Business Support Hub Online Booking System (Activities) download\",\r\n  \"tourismBusiness\": true,\r\n  \"inScotland\": true,\r\n  \"newsletter\": true,\r\n  \"emissionsUpdate\": true,\r\n  \"terms\": true,\r\n  \"g-recaptcha-response\":\"03AFcWeA5gJEe3or5LX3lqRKfqvtbQQhqVjwvUe0O6KgERJmPVfCBLI2l0EjOEjuV4GAIRZ5Ju04uWmeQ2hVY4bjO_E2mx2NOLyKfaBapinMGOld7zUdHN5uk8dg5-ThfiBwAlyz8K6MIHZb_H6tCz0ju4zlNfwNFaDZvA03Aa7RUN_LiLh-hIWidMqORjZ2zAV-Wm_-PuPSqMTBFvrao6geqVBo2r8_qHIyJ9Glwox40AVPoUI657yfPj-LCqDjhuWntZrByVh_ZgEb36o-qVA7A68ClBGj7ouAsb8FzApwPlzoQavQKoKylkvGu7QrB-77v_r8NrcrO2EUQK8v1clgLATq5qvBZuZuqRtfN9IOkSk3igK0XOGmS4aeI-0LcLx6Kps39UFHpKL2NrTXa1PFKfRqxZtUBAc8niafByov5EKavsGudNjR-gapbL1zmJZWft85PfK3dOqh9y2gwQL2gZFzW56AXXO_VzB5lIh6FikuSaZ7TPyhf5vMBCPThzOi_0fHLMIH7NaVyBpUkejNGYuS3aQUBkEhQy8fKzgHxDWEGgJAqNXWXJrennhvGdD_jgefZEjm6zVt4iUuFmgi_-zfPtBXiDTUn3freCs4AqILYzMzNM9jdKs-oikt5qzeq_BJfabyVMlk9o-vgikDGQmc00WapOArN6Buu4zUGz4DYzN_lFsPirfPa6A9UM1pX3nrrVG1V1s\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.visitscotland.net/dev/submit/ccg/register",
+          "protocol": "https",
+          "host": [
+            "api",
+            "visitscotland",
+            "net"
+          ],
+          "path": [
+            "dev",
+            "submit",
+            "ccg",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "202 Error",
+      "id": "7d4cc124-4d80-4dd0-8da9-827ce1d681cf",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\":\"developer.vs@visitscotland.com\",\r\n  \"firstName\": \"Test\",\r\n  \"lastName\": \"Developer of VisitScotland\",\r\n  \"businessName\": \"BusyNessie Ltd.\",\r\n  \"experienceLevel\": \"I_HAVE_NO_EXPERIENCE_WITH_CARBON_MEASUREMENT_AND_REPORTING\",\r\n  \"businessSector\": \"ACCOMMODATION\",\r\n  \"businessSubSector\": \"HOTELS\",\r\n  \"location\": \"CITY_OF_EDINBURGH\",\r\n  \"businessType\": \"LIMITED_COMPANY\",\r\n  \"ftStaff\": \"11-250\",\r\n  \"consents\" : \"carbon_calculator, All right!\",\r\n  \"activity_source\": \"Dev - Carbon Calculator\",\r\n  \"activity_description\":\"Business Support Hub Online Booking System (Activities) download\",\r\n  \"g-recaptcha-response\":\"03AFcWeA5gJEe3or5LX3lqRKfqvtbQQhqVjwvUe0O6KgERJmPVfCBLI2l0EjOEjuV4GAIRZ5Ju04uWmeQ2hVY4bjO_E2mx2NOLyKfaBapinMGOld7zUdHN5uk8dg5-ThfiBwAlyz8K6MIHZb_H6tCz0ju4zlNfwNFaDZvA03Aa7RUN_LiLh-hIWidMqORjZ2zAV-Wm_-PuPSqMTBFvrao6geqVBo2r8_qHIyJ9Glwox40AVPoUI657yfPj-LCqDjhuWntZrByVh_ZgEb36o-qVA7A68ClBGj7ouAsb8FzApwPlzoQavQKoKylkvGu7QrB-77v_r8NrcrO2EUQK8v1clgLATq5qvBZuZuqRtfN9IOkSk3igK0XOGmS4aeI-0LcLx6Kps39UFHpKL2NrTXa1PFKfRqxZtUBAc8niafByov5EKavsGudNjR-gapbL1zmJZWft85PfK3dOqh9y2gwQL2gZFzW56AXXO_VzB5lIh6FikuSaZ7TPyhf5vMBCPThzOi_0fHLMIH7NaVyBpUkejNGYuS3aQUBkEhQy8fKzgHxDWEGgJAqNXWXJrennhvGdD_jgefZEjm6zVt4iUuFmgi_-zfPtBXiDTUn3freCs4AqILYzMzNM9jdKs-oikt5qzeq_BJfabyVMlk9o-vgikDGQmc00WapOArN6Buu4zUGz4DYzN_lFsPirfPa6A9UM1pX3nrrVG1V1s\",\r\n\r\n  \"extraField\" : \"This extra field will break the submission to Trace API\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.visitscotland.net/dev/submit/ccg/register",
+          "protocol": "https",
+          "host": [
+            "api",
+            "visitscotland",
+            "net"
+          ],
+          "path": [
+            "dev",
+            "submit",
+            "ccg",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "401",
+      "id": "31b3e7cd-420a-49a6-ad3f-91c11288ce6e",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "https://api.visitscotland.net/dev/submit/ccg/register",
+          "protocol": "https",
+          "host": [
+            "api",
+            "visitscotland",
+            "net"
+          ],
+          "path": [
+            "dev",
+            "submit",
+            "ccg",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "409",
+      "id": "d022961d-1f09-4fb7-abc0-06e2ec5797d9",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\":   \"developer.vs@visitscotland.com\",\r\n  \"firstName\": \"Test2\",\r\n  \"lastName\": \"Developer of VisitScotland\",\r\n  \"businessName\": \"BusyNessie Ltd.\",\r\n  \"experienceLevel\": \"I_HAVE_NO_EXPERIENCE_WITH_CARBON_MEASUREMENT_AND_REPORTING\",\r\n  \"businessSector\": \"ACCOMMODATION\",\r\n  \"businessSubSector\": \"HOTELS\",\r\n  \"location\": \"CITY_OF_EDINBURGH\",\r\n  \"businessType\": \"LIMITED_COMPANY\",\r\n  \"ftStaff\": \"11-250\",\r\n  \"g-recaptcha-response\":\"03AFcWeA5gJEe3or5LX3lqRKfqvtbQQhqVjwvUe0O6KgERJmPVfCBLI2l0EjOEjuV4GAIRZ5Ju04uWmeQ2hVY4bjO_E2mx2NOLyKfaBapinMGOld7zUdHN5uk8dg5-ThfiBwAlyz8K6MIHZb_H6tCz0ju4zlNfwNFaDZvA03Aa7RUN_LiLh-hIWidMqORjZ2zAV-Wm_-PuPSqMTBFvrao6geqVBo2r8_qHIyJ9Glwox40AVPoUI657yfPj-LCqDjhuWntZrByVh_ZgEb36o-qVA7A68ClBGj7ouAsb8FzApwPlzoQavQKoKylkvGu7QrB-77v_r8NrcrO2EUQK8v1clgLATq5qvBZuZuqRtfN9IOkSk3igK0XOGmS4aeI-0LcLx6Kps39UFHpKL2NrTXa1PFKfRqxZtUBAc8niafByov5EKavsGudNjR-gapbL1zmJZWft85PfK3dOqh9y2gwQL2gZFzW56AXXO_VzB5lIh6FikuSaZ7TPyhf5vMBCPThzOi_0fHLMIH7NaVyBpUkejNGYuS3aQUBkEhQy8fKzgHxDWEGgJAqNXWXJrennhvGdD_jgefZEjm6zVt4iUuFmgi_-zfPtBXiDTUn3freCs4AqILYzMzNM9jdKs-oikt5qzeq_BJfabyVMlk9o-vgikDGQmc00WapOArN6Buu4zUGz4DYzN_lFsPirfPa6A9UM1pX3nrrVG1V1s\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.visitscotland.net/dev/submit/ccg/register",
+          "protocol": "https",
+          "host": [
+            "api",
+            "visitscotland",
+            "net"
+          ],
+          "path": [
+            "dev",
+            "submit",
+            "ccg",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "503",
+      "id": "3b3a7c87-dd11-4517-8a63-a9625507c650",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"g-recaptcha-response\":\"03AFcWeA5gJEe3or5LX3lqRKfqvtbQQhqVjwvUe0O6KgERJmPVfCBLI2l0EjOEjuV4GAIRZ5Ju04uWmeQ2hVY4bjO_E2mx2NOLyKfaBapinMGOld7zUdHN5uk8dg5-ThfiBwAlyz8K6MIHZb_H6tCz0ju4zlNfwNFaDZvA03Aa7RUN_LiLh-hIWidMqORjZ2zAV-Wm_-PuPSqMTBFvrao6geqVBo2r8_qHIyJ9Glwox40AVPoUI657yfPj-LCqDjhuWntZrByVh_ZgEb36o-qVA7A68ClBGj7ouAsb8FzApwPlzoQavQKoKylkvGu7QrB-77v_r8NrcrO2EUQK8v1clgLATq5qvBZuZuqRtfN9IOkSk3igK0XOGmS4aeI-0LcLx6Kps39UFHpKL2NrTXa1PFKfRqxZtUBAc8niafByov5EKavsGudNjR-gapbL1zmJZWft85PfK3dOqh9y2gwQL2gZFzW56AXXO_VzB5lIh6FikuSaZ7TPyhf5vMBCPThzOi_0fHLMIH7NaVyBpUkejNGYuS3aQUBkEhQy8fKzgHxDWEGgJAqNXWXJrennhvGdD_jgefZEjm6zVt4iUuFmgi_-zfPtBXiDTUn3freCs4AqILYzMzNM9jdKs-oikt5qzeq_BJfabyVMlk9o-vgikDGQmc00WapOArN6Buu4zUGz4DYzN_lFsPirfPa6A9UM1pX3nrrVG1V1s\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.visitscotland.net/dev/submit/ccg/register",
+          "protocol": "https",
+          "host": [
+            "api",
+            "visitscotland",
+            "net"
+          ],
+          "path": [
+            "dev",
+            "submit",
+            "ccg",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

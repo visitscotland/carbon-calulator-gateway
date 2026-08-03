@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import javax.security.auth.Subject;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
