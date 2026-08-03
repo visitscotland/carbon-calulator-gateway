@@ -3,6 +3,7 @@
     <option name="ACTIVE_PROFILES" value="dev" />
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <module name="vs-carbon-calculator" />
+    <option name="PROGRAM_PARAMETERS" value="--notification.email.enabled=false" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.visitscotland.ccg.VsCarbonCalculatorApplication" />
     <method v="2">
       <option name="Make" enabled="true" />
