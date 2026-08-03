@@ -34,7 +34,7 @@ Authorization: {{$random.internet.password}}
 {}
 
 ### Dummy submission to Trace API to get a list of events
-GET  https://api.staging.traceyour.events/v2/visitscotland/register
+PUT  https://api.staging.traceyour.events/v2/visitscotland/register
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiI2YTU3YjJhNzY1MDA5YTI3MTA0NGY2ZGIiLCJ0eXBlIjo2LCJpYXQiOjE3ODQxOTY0ODIsImV4cCI6MTc4NDE5NzM4Mn0.aBuZm46gIEbdjwU2FM2JPPDuABIO-WDyDMdUqcgJBgk
 
 {
@@ -50,4 +50,67 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiI2YTU3YjJh
     "ftStaff": "11-250",
     "consents" : "carbon_calculator, All right!",
     "vsUID": "{{$random.uuid}}"
+}
+
+### Sample submission from the form
+POST https://api.visitscotland.net/dev/submit/ccg/register
+Content-Type: application/json
+
+{
+  "tourismBusiness": "true",
+  "inScotland": "true",
+  "experienceLevel": "ADVANCED_I_HAVE_BEEN_RECORDING_FOR_MANY_YEARS",
+  "firstName": "Jose",
+  "lastName": "Calcines",
+  "email": "jose.calcines+bre@visitscotland.com",
+  "businessName": "VisitScotland",
+  "businessSector": "HERITAGE_CULTURE_AND_VISITOR_EXPERIENCES",
+  "businessSubSector---accommodation": "",
+  "businessSubSector---active": "",
+  "businessSubSector---events": "",
+  "businessSubSector---film": "",
+  "businessSubSector---food": "",
+  "businessSubSector---heritage": "VISITOR_ATTRACTIONS_AND_EXPERIENCES",
+  "businessSubSector---tours": "",
+  "location": "CITY_OF_EDINBURGH",
+  "businessType": "OTHER",
+  "ftStaff": "250_PLUS",
+  "newsletter": "true",
+  "emissionsUpdate": "true",
+  "handover": "true",
+  "terms": "true",
+  "answerOne": "",
+  "answerTwo": "",
+  "answerThree": "",
+  "answerFour": "",
+  "activity_code": "BSH_CC_26",
+  "activity_description": "Business Support Hub Carbon Calculator Registration",
+  "activity_source": "Dev - Carbon Calculator",
+  "g-recaptcha-response": "0cAFcWeA6gHX_iFsSTHgiHBv-Kh18a2Q2rzXEBtW725EJJ6J18dyvXXWDUtRPbyzBSk7g9_NgKxJ-81SKOXCuCEGlAAl1uXW5dWg2QjZ-XaIY30LPB3DeSdkepWIjY874LDw1BBAHF7d7jE9C1Y2oQ4v8UcmbSvui6N1z1qxN2utrZxFHONNB8MuFalwgjKzyz632_s8CiPCYqbpKKB3lu1T5oHO7ab8dY0UZcmZcr35ksGTKSkhl6FheJkwsml-chNn7ntjgl2Atu8FXaVM9xvhv8vrx1mWVoO2D6g_GPxFjH8Y13D4dCgEmwZsN3v-n50xqDjdu3b6CZxx-kT3zBAuydnqx3d6kVFErir_EI6KufW4lTfj9PzkLrDkp7gOS_on64GMTg3Cw1sREBDxJNLi3vtJ70jqs1l3Hmudm3l8AzTRjqIC_ETaPlw4-TRvCQW_EMEeIi35scVyEz-nVgFMQ6DrlrpK59jLtbULvbmqS4idE-IZ1m7kO1_-l6ZzstcpJy0ZAvtkdypqgkGRwozySUeg19ul09fJ89ot0K8eGNPAnoyOSBSvRxjVFo0OjHTJIm2NbPd6X8QeZexfj7XuIM_g9j9Vh3JLLetNOo0OLG8M0q-WLypD52iGtwJhOoQMP0UWwRwSDfimK1QpTjjuPr45R6HFqTWmsGP_ZtukYEX7ndOfVPdghNEOWHeBO7Y7SG0XkozGiKo-xjICU8p5XyUZRzKSoMzz0U-EZKd7PhaLIIIgDbt_0yr0Zg4zZytoiDLwRAAxWINh-7yZQhQoCb22HE-XOTe4J_j_9_t2GO5altA4ZR5R5PpDJwiljh3q3y8QmU5IjEYnM4eFh67-DSVb5JF4LFvxupIK9Y3T6zrikmCwVoGjYSbfFPW_19_1Boo5xxXRK8IV6lCXHr4HHrheFNgaPdCcB6WZsEMpz5UMd-Q2QQDGqHS5z91cvcSFtFrv8cQlry628LFsSe3HLfBOrpGoDmHTfrrlqX0jvGcPoHTblxYH6qJmQIY5VOUj9gt9Ge9JbXzTExbozpxtE-UU9NMrXqJTacVvWKv-Slia9yNIBUv28aDHjqenXODqZfI-NbYQ3mDZVfgiIVZTi5vBDHq6p9oOeUXFjZcQG7Ff6ZMmV3xYJqapfQdmJZgJj0ixLcMcUK_UKhoHWDgcxo9qD-tZ8Y3DPvL7Wsq5spazVYp3m-XOIyaxm98PDwGKpEwbudgHRwAcF4PxgZnDNPiMzuoTwQdpMMiMefkZqDlCyGGzKZJsIKdl1ZNGtp1L4Ee7GLdEUzE4tsFcZh_vXhEIsHdg3_2uQdAfcNSc8LW02bv2iWWWADldbIe2DDbYF0WgXEooSt",
+  "consentList": [
+    {
+      "key": "emissionsUpdate",
+      "value": "I agree to update my emissions records at least once a year",
+      "optional": false,
+      "type": "partner_consent"
+    },
+    {
+      "key": "account_ownership",
+      "value": "I agree to appoint someone else if I leave the business or can no longer update the records",
+      "optional": false,
+      "type": "partner_consent"
+    },
+    {
+      "key": "newsletter",
+      "value": "I want to receive VisitScotland's Business Support newsletter. (optional)",
+      "optional": true,
+      "type": ""
+    },
+    {
+      "key": "terms",
+      "value": "I accept the Carbon Calculator terms and conditions",
+      "optional": false,
+      "type": "partner_consent"
+    }
+  ]
 }

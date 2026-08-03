@@ -10,6 +10,7 @@ import com.visitscotland.ccg.notification.EmailNotificationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,9 @@ public class MainController {
     private final RecaptchaClient recaptchaService;
     private final TraceApiClient traceAPIService;
     private final EmailNotificationService emailNotificationService;
+
+    @Value("${metrics.enabled:false}")
+    private boolean metricsEnabled;
 
 
     public MainController(BregClient bregService, RecaptchaClient recaptchaService, TraceApiClient traceAPIService, EmailNotificationService emailNotificationService) {
@@ -64,7 +68,7 @@ public class MainController {
         VsException vsException = null;
 
         try {
-            traceAPIService.register(payload.asObject(), uuid);
+            metrics("Trace API", () -> traceAPIService.register(payload.asObject(), uuid));
         } catch (TraceApiException e) {
             logger.error(e.getApiMessage());
             if (e.getApiMessage().contains("User already exists with this email")) {
@@ -75,8 +79,9 @@ public class MainController {
             }
         }
 
+        final boolean traceApiFailure = (traceApiException != null);
         try {
-            bregService.sendRequest(payload, uuid, (traceApiException != null));
+            metrics("BREG", () -> bregService.sendRequest(payload, uuid, traceApiFailure));
         } catch (VsException e) {
             vsException = e;
         }
@@ -89,7 +94,7 @@ public class MainController {
     }
 
     private void notify(TraceApiException traceApiException, VsException vsException, String uuid) {
-        emailNotificationService.notify(traceApiException, vsException, uuid);
+        metrics("Email Notification", () -> emailNotificationService.notify(traceApiException, vsException, uuid));
     }
 
     private ResponseEntity<RegisterResponse> processResponse(String submissionId, boolean traceApiFailure, boolean bregFailure) {
@@ -100,8 +105,10 @@ public class MainController {
         } else if (traceApiFailure || bregFailure) {
             logger.error("One of the services could not process the submission, SubmissionId: {}, Trace API:{}, BREG: {}",
                     submissionId, traceApiFailure?"FAIL": "SUCCESS", bregFailure?"FAIL": "SUCCESS");
+            HttpStatus status = traceApiFailure ? HttpStatus.ACCEPTED : HttpStatus.OK;
+            String errorCode = traceApiFailure ? TRACE_API_FAILED : BREG_FAILED;
 
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new RegisterResponse(submissionId, (traceApiFailure ? TRACE_API_FAILED : BREG_FAILED)));
+            return ResponseEntity.status(status).body(new RegisterResponse(submissionId, errorCode));
         } else {
             return ResponseEntity.ok(new RegisterResponse(submissionId, SUCCESS));
         }
@@ -115,6 +122,18 @@ public class MainController {
             captchaResponse = "";
         }
         return recaptchaService.isValidRecaptcha(request, captchaResponse);
+    }
+
+    private void metrics(String process, Runnable action) {
+        long start = System.currentTimeMillis();
+        try {
+            action.run();
+        } finally {
+            if (metricsEnabled) {
+                logger.info("Metrics - {} took {} ms", process, (System.currentTimeMillis() - start));
+            }
+        }
+
     }
 
 }
