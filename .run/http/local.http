@@ -16,7 +16,7 @@ Content-Type: application/json
   "firstName": "José ほせ",
   "lastName": "Developer of VisitScotland",
   "businessName": "BusyNessie Ltd.",
-  "experieinceLevel": "I_HAVE_NO_EXPERIENCE_WITH_CARBON_MEASUREMENT_AND_REPORTING",
+  "experienceLevel": "I_HAVE_NO_EXPERIENCE_WITH_CARBON_MEASUREMENT_AND_REPORTING",
   "businessSector": "ACCOMMODATION",
   "businessSubSector---accommodation": "HOTELS",
   "businessSubSector---events": "",
@@ -49,7 +49,7 @@ Content-Type: application/json
   "businessName": "BusyNessie Ltd.",
 
   "extraField" : "This extra field will break the submission to Trace API",
-  "experieinceLevel": "I_HAVE_NO_EXPERIENCE_WITH_CARBON_MEASUREMENT_AND_REPORTING",
+  "experienceLevel": "I_HAVE_NO_EXPERIENCE_WITH_CARBON_MEASUREMENT_AND_REPORTING",
   "businessSector": "ACCOMMODATION",
   "businessSubSector": "HOTELS",
   "location": "CITY_OF_EDINBURGH",
@@ -66,20 +66,18 @@ Content-Type: application/json
 POST http://localhost:8077/register
 Content-Type: application/json
 
-{
-
-}
+{}
 
 ### User Already exists (409)
 POST http://localhost:8077/register
 Content-Type: application/json
 
 {
-  "email":   "developer+0001@visitscotland.com",
+  "email":   "developer.vs@visitscotland.com",
   "firstName": "José ほせ",
   "lastName": "Developer of VisitScotland",
   "businessName": "BusyNessie Ltd.",
-  "experieinceLevel": "I_HAVE_NO_EXPERIENCE_WITH_CARBON_MEASUREMENT_AND_REPORTING",
+  "experienceLevel": "I_HAVE_NO_EXPERIENCE_WITH_CARBON_MEASUREMENT_AND_REPORTING",
   "businessSector": "ACCOMMODATION",
   "businessSubSector": "HOTELS",
   "location": "CITY_OF_EDINBURGH",
