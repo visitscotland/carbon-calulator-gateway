@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class BregProperties {
 
     private String serviceUrl;
+    private String healthUrl;
     private String[] removeProperties;
     private boolean enabled;
 
@@ -31,5 +32,13 @@ public class BregProperties {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getHealthUrl() {
+        return healthUrl;
+    }
+
+    public void setHealthUrl(String healthUrl) {
+        this.healthUrl = healthUrl;
     }
 }

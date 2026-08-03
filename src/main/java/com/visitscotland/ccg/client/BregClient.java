@@ -29,6 +29,16 @@ public class BregClient {
         this.properties = properties;
     }
 
+    public void healthCheck() {
+
+        try {
+            // Send POST request
+            restTemplate.getForEntity(properties.getHealthUrl(), String.class);
+        } catch (Exception e) {
+            throw new VsException("Failed to send request to BREG service", e);
+        }
+    }
+
     public ResponseEntity<String> sendRequest(JsonNode payload, String submissionId, boolean traceApiFailure) throws VsException {
 
         if (!properties.isEnabled()) {
