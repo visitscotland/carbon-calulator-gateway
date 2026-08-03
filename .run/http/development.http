@@ -6,6 +6,10 @@ Content-Type: application/json
 GET https://api.visitscotland.net/dev/submit/ccg/info/properties
 Content-Type: application/json
 
+### Health Endpoint. To validate the system is up.
+GET https://api.visitscotland.net/dev/submit/ccg/info/health
+Content-Type: application/json
+
 ### Submits a sample registration request (200)
 POST https://api.visitscotland.net/dev/submit/ccg/register
 Content-Type: application/json

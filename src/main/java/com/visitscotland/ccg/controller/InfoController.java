@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tools.jackson.databind.ObjectMapper;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @RestController
 @Profile({"dev", "debug"})
@@ -53,26 +51,26 @@ public class InfoController {
     }
 
     @GetMapping("health")
-    public Map<String, String[]> getDownstreamHealth() {
+    public List<String[]> getDownstreamHealth() {
 
-        Map<String, String[]> result = new HashMap<>();
+        List<String[]> result = new ArrayList<>();
 
-        result.put("Trace API", timed(traceApiClient::getAuthenticationToken));
-        result.put("Trace API - Register Endpoint", timed(() ->
+        result.add(new String[]{"Trace API - authentication", time(traceApiClient::getAuthenticationToken)});
+        result.add(new String[]{"Trace API - /register", time(() ->
                 traceApiClient.register(objectMapper.createObjectNode(), "test")
-        ));
-        result.put("BREG", timed(bregClient::healthCheck));
+        )});
+        result.add(new String[]{"BREG", time(bregClient::healthCheck)});
 
         return result;
     }
 
-    private String[] timed(Runnable action) {
+    private String time(Runnable action) {
         long start = System.currentTimeMillis();
         try {
             action.run();
         } catch (Exception ignored) {
             // An Exception is an acceptable response
         }
-        return new String[]{String.format("%d ms", System.currentTimeMillis() - start)};
+        return String.format("%d ms", System.currentTimeMillis() - start);
     }
 }
